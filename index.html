@@ -1,0 +1,2007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Study Portal: Persuasive Writing & Reading Comprehension</title>
+    <!-- Tailwind CSS for high-quality, modern styles -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for engaging educational icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Dyslexia-Friendly Custom Overrides */
+        .dyslexia-mode {
+            font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif !important;
+            background-color: #fcf8f2 !important; /* Soft, warm warm cream to reduce glare */
+            color: #1e1b18 !important;
+            letter-spacing: 0.12em !important;
+            word-spacing: 0.25em !important;
+            line-height: 1.8 !important;
+        }
+        .dyslexia-mode p, .dyslexia-mode li, .dyslexia-mode h1, .dyslexia-mode h2, .dyslexia-mode h3, .dyslexia-mode span {
+            letter-spacing: 0.12em !important;
+            word-spacing: 0.22em !important;
+            line-height: 1.8 !important;
+        }
+        /* Normal custom smooth transitions */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        /* Custom tooltip hover effect */
+        .vocab-word {
+            border-bottom: 2px dashed #6366f1;
+            cursor: pointer;
+            position: relative;
+        }
+        /* Micro-reward animations */
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+        .animate-pop {
+            animation: pop 0.4s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col transition-colors duration-200" id="body-root">
+
+    <!-- Top Accessible Header -->
+    <header class="bg-gradient-to-r from-indigo-700 to-violet-600 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <!-- Brand & Navigation -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="goToHome()">
+                <div class="p-2.5 bg-white/10 rounded-xl">
+                    <i class="fa-solid fa-house-user text-2xl text-amber-300"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight">Academic Learning Portal</h1>
+                    <p class="text-xs text-indigo-100 font-medium">Your step-by-step subject pathways</p>
+                </div>
+            </div>
+
+            <!-- Accessibility Controls & Tracker -->
+            <div class="flex flex-wrap items-center gap-4 bg-white/10 p-2 rounded-xl border border-white/20">
+                <!-- Dyslexia Font Toggle -->
+                <button onclick="toggleDyslexiaMode()" class="flex items-center gap-2 text-xs bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-3 py-1.5 rounded-lg transition-transform active:scale-95 shadow-sm">
+                    <i class="fa-solid fa-eye text-sm"></i>
+                    <span id="font-toggle-text">Dyslexia Font: OFF</span>
+                </button>
+
+                <!-- Line Spacing Adjustment -->
+                <button onclick="toggleLineSpacing()" class="bg-indigo-900/40 hover:bg-indigo-900/60 p-1.5 rounded-lg text-white text-xs border border-white/10" title="Adjust Line Spacing">
+                    <i class="fa-solid fa-arrows-up-down"></i> Spacing
+                </button>
+
+                <!-- Back to Dashboard Home Button -->
+                <button onclick="goToHome()" class="bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-transform active:scale-95 shadow-sm">
+                    <i class="fa-solid fa-grip"></i> Home Hub
+                </button>
+
+                <!-- Clear Local Progress -->
+                <button onclick="resetAllProgress()" class="bg-rose-500/20 hover:bg-rose-500/40 border border-rose-500/30 text-rose-200 text-xs px-2.5 py-1.5 rounded-lg">
+                    Reset Progress
+                </button>
+            </div>
+        </div>
+
+        <!-- Progress Tracking Row -->
+        <div class="bg-indigo-900/30 px-4 py-2 border-t border-indigo-500/20">
+            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-sm">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-graduation-cap text-amber-300"></i>
+                    <span class="font-semibold text-indigo-100">Overall Course Progress:</span>
+                    <span id="progress-percentage" class="bg-emerald-500 text-white font-bold px-2 py-0.5 rounded text-xs">0%</span>
+                </div>
+                <div class="w-full sm:w-1/2 bg-slate-700/50 rounded-full h-3.5 overflow-hidden p-0.5 border border-white/10">
+                    <div id="master-progress-bar" class="bg-gradient-to-r from-emerald-400 to-teal-400 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <div class="text-xs font-semibold text-indigo-200" id="progress-ratio">0/6 Focus Tasks Completed</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN INTERACTIVE CONTAINER -->
+    <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 flex-1 flex flex-col">
+        
+        <!-- MODULE A: HOME DASHBOARD (Default view) -->
+        <div id="portal-home" class="space-y-8 animate-pop">
+            <!-- Hero Welcome Card -->
+            <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-8 shadow-xl relative overflow-hidden border border-indigo-500/30">
+                <div class="relative z-10 max-w-2xl space-y-4">
+                    <span class="bg-indigo-500/30 text-indigo-300 border border-indigo-500/50 px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-widest">Student Learning Portal</span>
+                    <h2 class="text-3xl sm:text-4xl font-black tracking-tight leading-tight">Welcome to Your Personal Learning Modules!</h2>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        This digital study space is designed to help you catch up on core course concepts at your own pace. Choose a study module below to begin. Your progress will automatically save as you work.
+                    </p>
+                    <div class="flex flex-wrap gap-4 pt-2">
+                        <div class="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-xl text-xs font-medium border border-white/10">
+                            <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            Self-Paced Learning
+                        </div>
+                        <div class="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-xl text-xs font-medium border border-white/10">
+                            📊 Progress Auto-Saved
+                        </div>
+                    </div>
+                </div>
+                <!-- Abstract visual circles in background -->
+                <div class="absolute right-0 bottom-0 top-0 w-1/3 bg-gradient-to-l from-indigo-500/20 to-transparent blur-2xl pointer-events-none"></div>
+                <div class="absolute -right-10 -bottom-10 h-48 w-48 rounded-full bg-violet-600/20 blur-3xl"></div>
+            </div>
+
+            <!-- Portal Subject Portals Grid -->
+            <div class="space-y-4">
+                <h3 class="text-xl font-black text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-route text-indigo-600"></i> Select Your Active Study Pathway
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <!-- Writing Quest Portal Card -->
+                    <div onclick="enterQuest('writing')" class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-md hover:shadow-xl hover:border-indigo-400 cursor-pointer transition-all duration-300 flex flex-col justify-between group relative overflow-hidden">
+                        <!-- Left outline glow bar on hover -->
+                        <div class="absolute left-0 top-0 bottom-0 w-2 bg-indigo-600 rounded-l-2xl"></div>
+                        <div class="space-y-4">
+                            <div class="h-12 w-12 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-pen-nib"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-black text-slate-900 group-hover:text-indigo-700 transition-colors">Writing Module</h4>
+                                <p class="text-slate-500 text-xs mt-1 leading-relaxed">
+                                    Learn to construct persuasive arguments, use rhetoric devices, write scaffolded paragraphs, and present speaking passages.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-indigo-600">
+                            <span>Open Writing Workspace</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+
+                    <!-- Reading Quest Portal Card -->
+                    <div onclick="enterQuest('reading')" class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-md hover:shadow-xl hover:border-teal-400 cursor-pointer transition-all duration-300 flex flex-col justify-between group relative overflow-hidden">
+                        <!-- Left outline glow bar on hover -->
+                        <div class="absolute left-0 top-0 bottom-0 w-2 bg-teal-500 rounded-l-2xl"></div>
+                        <div class="space-y-4">
+                            <div class="h-12 w-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-book-open"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-black text-slate-900 group-hover:text-teal-600 transition-colors">Reading Explorer</h4>
+                                <p class="text-slate-500 text-xs mt-1 leading-relaxed">
+                                    Read and analyze informative text selections (including Science and Social Studies passages) with interactive vocabulary popups and diagnostic questions.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-teal-600">
+                            <span>Open Passage Explorer</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+
+                    <!-- Math Quest Portal Card (EXTERNAL LINK) -->
+                    <div onclick="window.open('https://educognition.github.io/Maths-Practice/', '_blank')" class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-md hover:shadow-xl hover:border-amber-400 cursor-pointer transition-all duration-300 flex flex-col justify-between group relative overflow-hidden">
+                        <!-- Left outline glow bar on hover -->
+                        <div class="absolute left-0 top-0 bottom-0 w-2 bg-amber-500 rounded-l-2xl"></div>
+                        <div class="space-y-4">
+                            <div class="h-12 w-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-calculator"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-black text-slate-900 group-hover:text-amber-600 transition-colors">Math Module</h4>
+                                <p class="text-slate-500 text-xs mt-1 leading-relaxed">
+                                    Jump into your interactive mathematics practice site to solve equation scaffolds and build your numerical skills.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-amber-600">
+                            <span>Open Math Site <i class="fa-solid fa-external-link-alt ml-1 text-[10px]"></i></span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE B: WRITING ROADMAP AND WORKSPACE -->
+        <div id="portal-writing" class="hidden flex-1 flex flex-col lg:flex-row gap-6 animate-pop">
+            
+            <!-- Sidebar Selection Menu for Writing -->
+            <aside class="w-full lg:w-72 flex-shrink-0">
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 sticky top-28 space-y-4">
+                    <div class="flex items-center gap-2 border-b pb-2">
+                        <button onclick="goToHome()" class="text-xs text-indigo-600 hover:underline flex items-center gap-1 font-bold">
+                            <i class="fa-solid fa-arrow-left"></i> Home Hub
+                        </button>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider text-slate-400 px-2">Writing Study Roadmap</h3>
+                    <nav class="space-y-1.5" aria-label="Sidebar">
+                        <!-- Tab Button 1 -->
+                        <button onclick="switchTab('tab-intro')" id="btn-tab-intro" class="w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-left text-sm font-semibold transition-all duration-150 bg-indigo-50 text-indigo-700">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-compass text-base"></i>
+                                <span>1. Introduction to Hooks</span>
+                            </div>
+                            <i id="status-tab-intro" class="fa-regular fa-circle text-slate-300 text-base"></i>
+                        </button>
+
+                        <!-- Tab Button 2 -->
+                        <button onclick="switchTab('tab-techniques')" id="btn-tab-techniques" class="w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-left text-sm font-semibold transition-all duration-150 text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-bullhorn text-base"></i>
+                                <span>2. Key Rhetoric Devices</span>
+                            </div>
+                            <i id="status-tab-techniques" class="fa-regular fa-circle text-slate-300 text-base"></i>
+                        </button>
+
+                        <!-- Tab Button 3 -->
+                        <button onclick="switchTab('tab-reading')" id="btn-tab-reading" class="w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-left text-sm font-semibold transition-all duration-150 text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-book-open text-base"></i>
+                                <span>3. Structural Analysis</span>
+                            </div>
+                            <i id="status-tab-reading" class="fa-regular fa-circle text-slate-300 text-base"></i>
+                        </button>
+
+                        <!-- Tab Button 4 -->
+                        <button onclick="switchTab('tab-drafting')" id="btn-tab-drafting" class="w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-left text-sm font-semibold transition-all duration-150 text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-pen-nib text-base"></i>
+                                <span>4. Scaffolded Writing</span>
+                            </div>
+                            <i id="status-tab-drafting" class="fa-regular fa-circle text-slate-300 text-base"></i>
+                        </button>
+
+                        <!-- Tab Button 5 -->
+                        <button onclick="switchTab('tab-poem')" id="btn-tab-poem" class="w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-left text-sm font-semibold transition-all duration-150 text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-music text-base"></i>
+                                <span>5. Speaking Presentation</span>
+                            </div>
+                            <i id="status-tab-poem" class="fa-regular fa-circle text-slate-300 text-base"></i>
+                        </button>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Main Workspace Contents (Writing tabs render inside here) -->
+            <div class="flex-1 min-w-0 space-y-6">
+                
+                <!-- SECTION 1: INTRODUCTION TO PERSUASION -->
+                <div id="tab-intro" class="tab-content active space-y-6">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                        <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-3 py-1 rounded-full">Sessions 1 - 3</span>
+                        <h2 class="text-2xl font-black text-slate-900 mt-2">Core Stance: Master the Hook</h2>
+                        <p class="text-slate-600 mt-2 text-sm leading-relaxed">
+                            To write a strong persuasive essay, you must introduce your position with an engaging opening statement. In these initial sessions, we study the purpose of persuasive communication and how to organize concepts.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center gap-2 mb-3">
+                                    <span class="text-2xl">💡</span>
+                                    <h3 class="text-lg font-extrabold text-slate-900">What is a <span class="vocab-word" onclick="showVocab('perspective', this)">Perspective</span>?</h3>
+                                </div>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    A perspective is your <strong class="text-slate-800">point of view</strong>. In persuasive writing, you articulate one clear side of an argument, using supporting details to help the reader understand your rationale.
+                                </p>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-slate-400">
+                                Primary Objective: Inform, explain, and convince.
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm">
+                            <h3 class="text-lg font-extrabold text-slate-900 flex items-center gap-2 mb-3">
+                                <span>🍪</span> The OREO Framework
+                            </h3>
+                            <ul class="space-y-2.5 text-sm">
+                                <li class="flex items-start gap-2">
+                                    <span class="bg-indigo-600 text-white font-bold text-xs h-5 w-5 rounded-full flex items-center justify-center mt-0.5 shrink-0">O</span>
+                                    <div><strong>Opinion:</strong> Clearly state your position on the topic.</div>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="bg-indigo-500 text-white font-bold text-xs h-5 w-5 rounded-full flex items-center justify-center mt-0.5 shrink-0">R</span>
+                                    <div><strong>Reason:</strong> Give logical reasons that support your position.</div>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="bg-indigo-400 text-white font-bold text-xs h-5 w-5 rounded-full flex items-center justify-center mt-0.5 shrink-0">E</span>
+                                    <div><strong>Explanation:</strong> Provide concrete examples, evidence, or data.</div>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="bg-indigo-300 text-white font-bold text-xs h-5 w-5 rounded-full flex items-center justify-center mt-0.5 shrink-0">O</span>
+                                    <div><strong>Opinion:</strong> Reiterate your stance to leave a strong impression.</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-indigo-50 border border-indigo-100 rounded-2xl p-6 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-indigo-600"></i> Concept Check: Identify the Best Hook
+                        </h3>
+                        <p class="text-xs text-indigo-700 font-medium mt-1">An effective hook catches the reader's attention. Analyze the choices below and select the strongest introductory hook statement.</p>
+                        
+                        <div class="mt-4 space-y-3">
+                            <button onclick="checkHookAnswer('wrong1', this)" class="w-full text-left p-3.5 bg-white rounded-xl border border-slate-200 hover:border-indigo-300 transition-all text-sm flex gap-3 items-center">
+                                <span class="w-6 h-6 rounded-full bg-slate-100 text-slate-500 font-bold flex items-center justify-center text-xs shrink-0">A</span>
+                                <span>"In this essay, I will tell you why plastic waste is super bad for our environment." (Predictable)</span>
+                            </button>
+                            
+                            <button onclick="checkHookAnswer('correct', this)" class="w-full text-left p-3.5 bg-white rounded-xl border border-slate-200 hover:border-indigo-300 transition-all text-sm flex gap-3 items-center">
+                                <span class="w-6 h-6 rounded-full bg-slate-100 text-slate-500 font-bold flex items-center justify-center text-xs shrink-0">B</span>
+                                <span>"Imagine taking a bite of your favorite food, only to realize it's wrapped in poison. That's what millions of marine animals experience every single day." (Descriptive & Emotive)</span>
+                            </button>
+
+                            <button onclick="checkHookAnswer('wrong2', this)" class="w-full text-left p-3.5 bg-white rounded-xl border border-slate-200 hover:border-indigo-300 transition-all text-sm flex gap-3 items-center">
+                                <span class="w-6 h-6 rounded-full bg-slate-100 text-slate-500 font-bold flex items-center justify-center text-xs shrink-0">C</span>
+                                <span>"Plastics are synthetically processed polymers that have wide industrial application globally." (Too Scientific & Objective)</span>
+                            </button>
+                        </div>
+                        <div id="hook-feedback" class="mt-4 hidden p-3 rounded-xl text-sm font-semibold flex items-center gap-2"></div>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: PERSUASIVE TECHNIQUES -->
+                <div id="tab-techniques" class="tab-content space-y-6">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                        <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-3 py-1 rounded-full">Sessions 4 - 6</span>
+                        <h2 class="text-2xl font-black text-slate-900 mt-2">Rhetoric Toolkit: Persuasive Devices</h2>
+                        <p class="text-slate-600 mt-2 text-sm">
+                            To make your thesis statements compelling, you can employ vocabulary and style techniques. Let us identify these key structural devices.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">💡 Study Flashcards</h3>
+                        <p class="text-xs text-slate-500 mb-4">Click each card to view definitions and examples.</p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div onclick="flipCard('card1')" class="bg-slate-50 hover:bg-slate-100/80 cursor-pointer p-6 rounded-xl border border-slate-200/60 min-h-[140px] flex flex-col justify-between transition-all duration-300 shadow-sm relative overflow-hidden" id="card1">
+                                <div id="card1-front" class="space-y-2">
+                                    <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded font-bold">DEVICE</span>
+                                    <h4 class="font-extrabold text-indigo-950 text-base">Rhetorical Question</h4>
+                                    <p class="text-xs text-slate-400">Click to reveal details...</p>
+                                </div>
+                                <div id="card1-back" class="hidden space-y-2">
+                                    <p class="text-xs font-semibold text-indigo-800">A question posed to encourage consideration rather than solicit an actual answer.</p>
+                                    <p class="text-xs italic text-slate-500">"Do you want to live in a world choked by concrete?"</p>
+                                </div>
+                            </div>
+
+                            <div onclick="flipCard('card2')" class="bg-slate-50 hover:bg-slate-100/80 cursor-pointer p-6 rounded-xl border border-slate-200/60 min-h-[140px] flex flex-col justify-between transition-all duration-300 shadow-sm relative overflow-hidden" id="card2">
+                                <div id="card2-front" class="space-y-2">
+                                    <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded font-bold">DEVICE</span>
+                                    <h4 class="font-extrabold text-emerald-950 text-base">Rule of Three</h4>
+                                    <p class="text-xs text-slate-400">Click to reveal details...</p>
+                                </div>
+                                <div id="card2-back" class="hidden space-y-2">
+                                    <p class="text-xs font-semibold text-emerald-800">Grouping three related points together increases readability and memorability.</p>
+                                    <p class="text-xs italic text-slate-500">"Reduce, Reuse, Recycle."</p>
+                                </div>
+                            </div>
+
+                            <div onclick="flipCard('card3')" class="bg-slate-50 hover:bg-slate-100/80 cursor-pointer p-6 rounded-xl border border-slate-200/60 min-h-[140px] flex flex-col justify-between transition-all duration-300 shadow-sm relative overflow-hidden" id="card3">
+                                <div id="card3-front" class="space-y-2">
+                                    <span class="text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded font-bold">DEVICE</span>
+                                    <h4 class="font-extrabold text-violet-950 text-base">Emotive Language</h4>
+                                    <p class="text-xs text-slate-400">Click to reveal details...</p>
+                                </div>
+                                <div id="card3-back" class="hidden space-y-2">
+                                    <p class="text-xs font-semibold text-violet-800">Selecting strong, descriptive words to draw out an emotional response from the reader.</p>
+                                    <p class="text-xs italic text-slate-500">"An <strong class="text-rose-600">appalling</strong> waste of precious human potential."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2 mb-2">
+                            <i class="fa-solid fa-puzzle-piece text-amber-600"></i> Technique Matching Exercise
+                        </h3>
+                        <p class="text-xs text-amber-800 font-medium mb-4">Select an example sentence on the left, then click its corresponding rhetorical technique label on the right.</p>
+
+                        <div class="flex flex-col md:flex-row gap-6">
+                            <div class="w-full md:w-1/2 space-y-2" id="match-examples-list">
+                                <button id="ex-1" onclick="selectMatch('ex', 'ex-1', 'Rule of Three')" class="w-full text-left p-3.5 bg-white border border-slate-200 hover:bg-amber-100/50 rounded-xl text-sm font-semibold transition-all">
+                                    "Our oceans are dying, our skies are dimming, and our forests are fading away."
+                                </button>
+                                <button id="ex-2" onclick="selectMatch('ex', 'ex-2', 'Rhetorical Question')" class="w-full text-left p-3.5 bg-white border border-slate-200 hover:bg-amber-100/50 rounded-xl text-sm font-semibold transition-all">
+                                    "How can we stand idly by while our cultural roots vanish?"
+                                </button>
+                                <button id="ex-3" onclick="selectMatch('ex', 'ex-3', 'Emotive Language')" class="w-full text-left p-3.5 bg-white border border-slate-200 hover:bg-amber-100/50 rounded-xl text-sm font-semibold transition-all">
+                                    "This is a cruel, agonizing betrayal of our beautiful, ancient heritage."
+                                </button>
+                            </div>
+
+                            <div class="w-full md:w-1/2 space-y-2" id="match-types-list">
+                                <button id="type-1" onclick="selectMatch('type', 'type-1', 'Rhetorical Question')" class="w-full text-left p-3.5 bg-white border border-slate-200 hover:bg-amber-100/50 rounded-xl text-sm font-semibold transition-all flex justify-between items-center">
+                                    <span>Rhetorical Question</span>
+                                    <span class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded">Device A</span>
+                                </button>
+                                <button id="type-2" onclick="selectMatch('type', 'type-2', 'Rule of Three')" class="w-full text-left p-3.5 bg-white border border-slate-200 hover:bg-amber-100/50 rounded-xl text-sm font-semibold transition-all flex justify-between items-center">
+                                    <span>Rule of Three</span>
+                                    <span class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded">Device B</span>
+                                </button>
+                                <button id="type-3" onclick="selectMatch('type', 'type-3', 'Emotive Language')" class="w-full text-left p-3.5 bg-white border border-slate-200 hover:bg-amber-100/50 rounded-xl text-sm font-semibold transition-all flex justify-between items-center">
+                                    <span>Emotive Language</span>
+                                    <span class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded">Device C</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="matching-feedback" class="mt-4 hidden p-3 rounded-xl text-sm font-semibold"></div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: SPLIT-SCREEN READING LAYOUT -->
+                <div id="tab-reading" class="tab-content space-y-6">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                        <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-3 py-1 rounded-full">Sessions 7 - 10</span>
+                        <h2 class="text-2xl font-black text-slate-900 mt-2">Active Analysis: Deconstruct a Persuasive Model</h2>
+                        <p class="text-slate-600 mt-2 text-sm">
+                            To write effective arguments, we first analyze exemplary models. Read the sample essay on the left, then answer the comprehension and structure analysis questions on the right.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                        <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 max-h-[600px] overflow-y-auto space-y-4">
+                            <div class="sticky top-0 bg-white/95 pb-3 border-b border-slate-100 mb-2 flex justify-between items-center">
+                                <h3 class="font-extrabold text-slate-800 flex items-center gap-2">
+                                    <i class="fa-solid fa-file-invoice text-indigo-600"></i> Model Essay
+                                </h3>
+                                <span class="text-xs text-slate-400">Read Carefully</span>
+                            </div>
+
+                            <div class="space-y-4 text-sm leading-relaxed" id="essay-reading-text">
+                                <h4 class="text-lg font-black text-indigo-950">Title: Why We Must Save Our Shared Cultures</h4>
+                                <p class="text-slate-700">
+                                    Think of your family's favorite tradition or story. How would you feel if it vanished overnight, lost to history like a whisper in the wind? Across the globe, unique ancestral cultures are fading at an <span class="vocab-word font-bold text-indigo-600" onclick="showVocab('alarming', this)">alarming</span> rate. If we do not actively protect these traditions, we are risking the loss of humanity's shared memory.
+                                </p>
+                                <p class="text-slate-700">
+                                    Firstly, our <span class="vocab-word font-bold text-indigo-600" onclick="showVocab('heritage', this)">heritage</span> is our mirror. It teaches us where we come from and why we speak, think, or act in unique ways. Studies from global social researchers show that students who connect with their traditional languages show significantly higher self-esteem and resilience in school. Cultural pride builds a protective shield around vulnerable youth, guiding them forward with a deep sense of identity.
+                                </p>
+                                <p class="text-slate-700">
+                                    Secondly, unity cannot exist without diversity. When different viewpoints and cultures intertwine, communities become infinitely stronger, more creative, and more <span class="vocab-word font-bold text-indigo-600" onclick="showVocab('collaborative', this)">collaborative</span>. Just as an ecosystem needs millions of diverse species to survive, a society needs diverse voices to solve complicated, modern problems.
+                                </p>
+                                <p class="text-slate-700">
+                                    Opponents might argue that holding onto old customs prevents modern societies from globalizing or moving forward. However, this is a dangerous error. True progress does not demand that we destroy our historical foundations. We can build soaring skyscrapers while still respecting the soil upon which they stand.
+                                </p>
+                                <p class="text-slate-700">
+                                    In summary, we stand at a critical crossroads. Will we let our languages, stories, and songs dissolve into a quiet void, or will we pass them on as shining lanterns for the youth? Let us speak up, share our unique roots, and fund local cultural centers before it is forever too late.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-5 bg-gradient-to-br from-indigo-900 to-indigo-950 text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-extrabold text-amber-300 text-base mb-3 flex items-center gap-2">
+                                    <i class="fa-solid fa-clipboard-question"></i> Active Analysis Questions
+                                </h3>
+                                <p class="text-indigo-200 text-xs mb-4">Complete the analysis tasks below to evaluate the essay's structure.</p>
+
+                                <div class="space-y-4">
+                                    <div class="bg-indigo-800/40 border border-indigo-700/50 p-4 rounded-xl">
+                                        <label class="block text-xs font-bold text-indigo-300 uppercase mb-2">1. Locate the Hook Device</label>
+                                        <p class="text-xs mb-3 text-slate-100">In what way does the author establish a hook in the opening paragraph?</p>
+                                        <div class="space-y-2">
+                                            <button onclick="checkAnalysisAnswer('q1-wrong', this)" class="w-full text-left p-2.5 bg-indigo-950/50 hover:bg-indigo-950 border border-indigo-700 rounded-lg text-xs transition-colors">
+                                                A) Presenting a list of historical dates.
+                                            </button>
+                                            <button onclick="checkAnalysisAnswer('q1-correct', this)" class="w-full text-left p-2.5 bg-indigo-950/50 hover:bg-indigo-950 border border-indigo-700 rounded-lg text-xs transition-colors">
+                                                B) Asking a highly emotional question about family traditions.
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-indigo-800/40 border border-indigo-700/50 p-4 rounded-xl">
+                                        <label class="block text-xs font-bold text-indigo-300 uppercase mb-2">2. Find the Refutation (Counterargument)</label>
+                                        <p class="text-xs mb-3 text-slate-100">In which paragraph does the writer address opposing arguments and present a counter-claim?</p>
+                                        <div class="space-y-2">
+                                            <button onclick="checkAnalysisAnswer('q2-correct', this)" class="w-full text-left p-2.5 bg-indigo-950/50 hover:bg-indigo-950 border border-indigo-700 rounded-lg text-xs transition-colors">
+                                                A) In Paragraph 4: Addressing progress and modern infrastructure.
+                                            </button>
+                                            <button onclick="checkAnalysisAnswer('q2-wrong', this)" class="w-full text-left p-2.5 bg-indigo-950/50 hover:bg-indigo-950 border border-indigo-700 rounded-lg text-xs transition-colors">
+                                                B) In Paragraph 1: Mentioning fading stories.
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="analysis-feedback" class="mt-4 hidden p-3 rounded-xl text-xs font-semibold"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 4: INTERACTIVE DRAFTING WORKSPACE -->
+                <div id="tab-drafting" class="tab-content space-y-6">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                        <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-3 py-1 rounded-full">Sessions 11 - 14</span>
+                        <h2 class="text-2xl font-black text-slate-900 mt-2">Interactive Essay Builder & Sentence Frames</h2>
+                        <p class="text-slate-600 mt-2 text-sm">
+                            Now, apply these skills to construct your own argument. Select an prompt topic below. Use our click-to-add sentence starters to help organize your draft.
+                        </p>
+                    </div>
+
+                    <div class="bg-indigo-50 border border-indigo-100 p-5 rounded-2xl">
+                        <h3 class="font-extrabold text-slate-800 text-sm mb-3">1. Select Your Essay Topic</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <button onclick="setTopic('culture')" class="bg-white hover:bg-indigo-100 p-3.5 rounded-xl border-2 border-indigo-200 text-sm font-bold text-indigo-950 transition-all text-left flex items-start gap-2 active-topic-btn" id="btn-topic-culture">
+                                <span class="text-lg">🌍</span>
+                                <div>
+                                    <p>Preserving Local Culture</p>
+                                    <span class="text-[10px] text-slate-500 font-normal">Why traditions are key to building communities.</span>
+                                </div>
+                            </button>
+                            <button onclick="setTopic('screen')" class="bg-white hover:bg-indigo-100 p-3.5 rounded-xl border border-slate-200 text-sm font-bold text-indigo-950 transition-all text-left flex items-start gap-2" id="btn-topic-screen">
+                                <span class="text-lg">📱</span>
+                                <div>
+                                    <p>Regulating Screen Time</p>
+                                    <span class="text-[10px] text-slate-500 font-normal">Why real-world interaction builds crucial cognitive skills.</span>
+                                </div>
+                            </button>
+                            <button onclick="setTopic('nature')" class="bg-white hover:bg-indigo-100 p-3.5 rounded-xl border border-slate-200 text-sm font-bold text-indigo-950 transition-all text-left flex items-start gap-2" id="btn-topic-nature">
+                                <span class="text-lg">🌲</span>
+                                <div>
+                                    <p>Outdoor Learning Environments</p>
+                                    <span class="text-[10px] text-slate-500 font-normal">Why exploring nature serves as an excellent classroom.</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <div class="lg:col-span-5 bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2 border-b pb-2">
+                                <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i> Click-to-Insert Starters
+                            </h3>
+
+                            <div class="space-y-3">
+                                <div>
+                                    <span class="text-[11px] font-bold text-indigo-600 block mb-1.5 uppercase tracking-wider">The Hook (Opening)</span>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button onclick="insertStarter('hook', 'Imagine a world where...')" class="text-xs bg-slate-50 hover:bg-indigo-50 text-slate-700 px-2.5 py-1.5 rounded-lg border border-slate-200 hover:border-indigo-300 font-medium transition-colors">"Imagine..."</button>
+                                        <button onclick="insertStarter('hook', 'Did you know that over...')" class="text-xs bg-slate-50 hover:bg-indigo-50 text-slate-700 px-2.5 py-1.5 rounded-lg border border-slate-200 hover:border-indigo-300 font-medium transition-colors">"Did you know..."</button>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <span class="text-[11px] font-bold text-emerald-600 block mb-1.5 uppercase tracking-wider">Evidence (O-R-E-O)</span>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button onclick="insertStarter('body', 'The primary reason for this is...')" class="text-xs bg-slate-50 hover:bg-emerald-50 text-slate-700 px-2.5 py-1.5 rounded-lg border border-slate-200 hover:border-emerald-300 font-medium transition-colors">"The primary reason..."</button>
+                                        <button onclick="insertStarter('body', 'According to reliable social research...')" class="text-xs bg-slate-50 hover:bg-emerald-50 text-slate-700 px-2.5 py-1.5 rounded-lg border border-slate-200 hover:border-emerald-300 font-medium transition-colors">"According to..."</button>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <span class="text-[11px] font-bold text-rose-600 block mb-1.5 uppercase tracking-wider">Refuting Opponents</span>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button onclick="insertStarter('refute', 'While opponents may claim that...')" class="text-xs bg-slate-50 hover:bg-rose-50 text-slate-700 px-2.5 py-1.5 rounded-lg border border-slate-200 hover:border-rose-300 font-medium transition-colors">"While opponents..."</button>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <span class="text-[11px] font-bold text-violet-600 block mb-1.5 uppercase tracking-wider">Conclusion</span>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button onclick="insertStarter('conclusion', 'Ultimately, the path forward requires us to...')" class="text-xs bg-slate-50 hover:bg-violet-50 text-slate-700 px-2.5 py-1.5 rounded-lg border border-slate-200 hover:border-violet-300 font-medium transition-colors">"Ultimately..."</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 pt-4 border-t border-slate-100 bg-emerald-50/50 p-3 rounded-xl border border-emerald-100">
+                                <h4 class="text-xs font-bold text-slate-800">Checklist Challenge</h4>
+                                <div class="space-y-1.5 mt-2">
+                                    <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer">
+                                        <input type="checkbox" id="check-hook" onchange="verifyChecklist()" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                                        <span>Included a strong opening hook</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer">
+                                        <input type="checkbox" id="check-reason" onchange="verifyChecklist()" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                                        <span>Added at least 1 explanation/evidence</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer">
+                                        <input type="checkbox" id="check-ending" onchange="verifyChecklist()" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                                        <span>Finished with a clear Call to Action</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                                <h3 class="font-extrabold text-slate-800 text-sm">2. Draft Your Paragraph Blocks</h3>
+                                <button onclick="clearDrafts()" class="text-xs text-rose-500 font-semibold hover:underline">Clear Drafts</button>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-indigo-700 uppercase tracking-wide mb-1">Introduction & Hook</label>
+                                <textarea id="draft-hook" rows="2" class="w-full text-sm border border-slate-200 focus:ring-2 focus:ring-indigo-500 rounded-xl p-3 bg-slate-50/50 focus:bg-white" placeholder="Introduce your perspective and fire off your catchy hook question..."></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wide mb-1">Your Strongest Reasons & Evidence</label>
+                                <textarea id="draft-body" rows="3" class="w-full text-sm border border-slate-200 focus:ring-2 focus:ring-indigo-500 rounded-xl p-3 bg-slate-50/50 focus:bg-white" placeholder="Give reasons back up your point of view with detailed examples..."></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-rose-700 uppercase tracking-wide mb-1">The Counterargument & Shield</label>
+                                <textarea id="draft-refute" rows="2" class="w-full text-sm border border-slate-200 focus:ring-2 focus:ring-indigo-500 rounded-xl p-3 bg-slate-50/50 focus:bg-white" placeholder="What would critics say? Shield against their point of view directly..."></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-violet-700 uppercase tracking-wide mb-1">Call to Action (Ending)</label>
+                                <textarea id="draft-conclusion" rows="2" class="w-full text-sm border border-slate-200 focus:ring-2 focus:ring-indigo-500 rounded-xl p-3 bg-slate-50/50 focus:bg-white" placeholder="Leave your audience inspired with a final memorable action step..."></textarea>
+                            </div>
+
+                            <div class="pt-2">
+                                <button id="btn-save-draft" onclick="saveDraft()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    <span>Save Draft & Mark Completed</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 5: SPOKEN POEM CHALLENGE -->
+                <div id="tab-poem" class="tab-content space-y-6">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                        <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-3 py-1 rounded-full">Sessions 19 - 20</span>
+                        <h2 class="text-2xl font-black text-slate-900 mt-2">Final Step: Turn Your Essay Into a Spoken Poem</h2>
+                        <p class="text-slate-600 mt-2 text-sm">
+                            In the final sessions, we look at how to translate structured prose paragraphs into a rhythmic, impactful **Spoken Word presentation**. This helps emphasize key messages through deliberate phrasing, pauses, and cadence.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-100 shadow-sm">
+                            <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-2">Essay Block (Standard Prose)</h3>
+                            <p class="text-slate-600 text-xs italic leading-relaxed">
+                                "Our roots run deep, in stories told, In songs and dances, both young and old. Languages whisper the past we share, Traditions remind us to listen, to care."
+                            </p>
+                            <span class="inline-block mt-3 text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded font-bold">Extended Sentence Structures</span>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-emerald-500 to-teal-500 text-white p-5 rounded-xl shadow-md">
+                            <h3 class="text-sm font-bold text-emerald-100 uppercase tracking-wider mb-2">Spoken Word Format (Rhythmic & Phrased)</h3>
+                            <p class="text-white font-extrabold text-sm leading-relaxed tracking-wider">
+                                "Our roots run deep, in stories told,<br>
+                                In songs and dances, both young and old.<br>
+                                Languages whisper the past we share,<br>
+                                Traditions remind us to listen... to care."
+                            </p>
+                            <span class="inline-block mt-3 text-xs bg-white/20 text-white px-2 py-0.5 rounded font-bold">Structured for Presentation Cadence</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">🗣️ The Rhythm and Phrasing Sandbox</h3>
+                        <p class="text-xs text-slate-500 mb-4">Input standard text on the left to see how breaking up sentences and introducing strategic line pauses alters the structure and tone on the right.</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold text-indigo-700 uppercase tracking-wide mb-1">Standard Prolix Writing</label>
+                                <textarea id="sandbox-prose" rows="4" oninput="transformText()" class="w-full text-sm border border-slate-200 focus:ring-2 focus:ring-indigo-500 rounded-xl p-3 bg-slate-50/50 focus:bg-white" placeholder="Example: We must remember where we come from and who we are because otherwise we will lose ourselves in this fast-paced world."></textarea>
+                            </div>
+
+                            <div class="bg-slate-950 text-emerald-400 p-5 rounded-xl font-mono text-sm min-h-[140px] flex flex-col justify-between border-2 border-slate-800">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Line-Break & Cadence Analysis</label>
+                                    <div id="sandbox-poetry-output" class="whitespace-pre-line leading-relaxed text-slate-200">
+                                        (Text structure mapping will render here...)
+                                    </div>
+                                </div>
+                                <div class="text-[10px] text-slate-500 text-right mt-3">
+                                    Tip: Use shorter phrasing to build focus.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6 text-center">
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">Completed the Section?</h3>
+                        <p class="text-xs text-slate-600 max-w-md mx-auto mb-4">If you have reviewed the presentation formats and completed your practice drafting, log this section as complete.</p>
+                        <button onclick="markPoemFinished()" class="bg-amber-500 hover:bg-amber-600 text-slate-900 font-extrabold px-6 py-3 rounded-xl shadow-md transition-all active:scale-95 inline-flex items-center gap-2">
+                            <i class="fa-solid fa-check text-lg"></i> Complete Spoken Word Session
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- MODULE C: READING EXPLORER (COMPREHENSION PASSAGES) -->
+        <div id="portal-reading" class="hidden flex-grow flex flex-col gap-6 animate-pop">
+            
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                <div class="flex items-center justify-between border-b pb-3 mb-3">
+                    <span class="text-xs font-bold text-teal-600 uppercase tracking-widest bg-teal-50 px-3 py-1 rounded-full">Passage Explorer</span>
+                    <button onclick="goToHome()" class="text-xs text-teal-600 hover:underline flex items-center gap-1 font-bold">
+                        <i class="fa-solid fa-arrow-left"></i> Home Hub
+                    </button>
+                </div>
+                <h2 class="text-2xl font-black text-slate-900">Active Reading & Comprehension Challenge</h2>
+                <p class="text-slate-600 mt-2 text-sm">
+                    Select a science or social studies passage below to explore and analyze. Tap the highlighted vocabulary terms to view in-context definitions, then complete the multi-question diagnostic check on the right.
+                </p>
+            </div>
+
+            <!-- Passage Selector Buttons -->
+            <div class="bg-slate-100 p-4 rounded-2xl border border-slate-200">
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Select Your Focus Reading Passage:</label>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+                    <button onclick="loadPassage('dystopian')" id="btn-pass-dystopian" class="p-2.5 bg-teal-600 text-white text-xs font-bold rounded-xl shadow-sm border border-teal-500 transition-all text-center">
+                        Dystopian Fiction
+                    </button>
+                    <button onclick="loadPassage('lions')" id="btn-pass-lions" class="p-2.5 bg-white text-slate-700 hover:bg-slate-50 text-xs font-bold rounded-xl border border-slate-200 transition-all text-center">
+                        Mountain Lions
+                    </button>
+                    <button onclick="loadPassage('tarahumara')" id="btn-pass-tarahumara" class="p-2.5 bg-white text-slate-700 hover:bg-slate-50 text-xs font-bold rounded-xl border border-slate-200 transition-all text-center">
+                        Tarahumara Runners
+                    </button>
+                    <button onclick="loadPassage('butterfly')" id="btn-pass-butterfly" class="p-2.5 bg-white text-slate-700 hover:bg-slate-50 text-xs font-bold rounded-xl border border-slate-200 transition-all text-center">
+                        Butterfly Anatomy
+                    </button>
+                    <button onclick="loadPassage('peaches')" id="btn-pass-peaches" class="p-2.5 bg-white text-slate-700 hover:bg-slate-50 text-xs font-bold rounded-xl border border-slate-200 transition-all text-center">
+                        Peach Evolution
+                    </button>
+                    <button onclick="loadPassage('tectonics')" id="btn-pass-tectonics" class="p-2.5 bg-white text-slate-700 hover:bg-slate-50 text-xs font-bold rounded-xl border border-slate-200 transition-all text-center">
+                        Plate Tectonics
+                    </button>
+                </div>
+            </div>
+
+            <!-- PASSAGE SPLIT WORKSPACE -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                <!-- Left Column: Passage Content Viewer -->
+                <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 max-h-[650px] overflow-y-auto space-y-4">
+                    <div class="sticky top-0 bg-white/95 pb-3 border-b border-slate-100 flex items-center justify-between">
+                        <h3 id="passage-title" class="font-black text-slate-800 text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-file-invoice text-teal-600"></i> Dark Futures: Dystopian Fiction
+                        </h3>
+                        <span id="passage-author" class="text-xs text-slate-400">by Caitlyn Meagher</span>
+                    </div>
+
+                    <div id="passage-body-content" class="text-sm text-slate-700 space-y-4 leading-relaxed">
+                        <!-- Default loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Right Column: Interactive Quiz Box -->
+                <div class="lg:col-span-5 bg-gradient-to-br from-slate-900 to-slate-950 text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between min-h-[500px]">
+                    <div>
+                        <!-- Header with dynamic Question number indicator -->
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
+                            <h3 class="font-extrabold text-amber-300 text-sm flex items-center gap-2">
+                                <i class="fa-solid fa-award"></i> Comprehension check
+                            </h3>
+                            <span id="quiz-question-number" class="text-xs text-teal-400 font-bold uppercase tracking-wider">Question 1 of 5</span>
+                        </div>
+                        <p class="text-slate-300 text-[11px] mb-4">Analyze the text and provide the best response. Get immediate diagnostic feedback!</p>
+
+                        <!-- Question and option wrapper -->
+                        <div id="comprehension-quiz-container" class="space-y-4">
+                            <div class="bg-slate-800/60 border border-slate-700/60 p-4 rounded-xl">
+                                <h4 id="quiz-question-text" class="text-xs font-bold text-teal-300 uppercase tracking-wide mb-3">
+                                    Loading Question...
+                                </h4>
+                                <div id="quiz-options-box" class="space-y-2">
+                                    <!-- Options injected dynamic -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footnotes/Controls and Live Feedbacks Panel -->
+                    <div class="mt-4 pt-4 border-t border-slate-800/80">
+                        <div id="comp-feedback" class="p-3 rounded-xl text-xs font-semibold text-center mb-4 hidden animate-pop"></div>
+                        
+                        <div class="flex items-center justify-between">
+                            <button id="btn-quiz-prev" onclick="changeQuizQuestion(-1)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-bold transition-colors" disabled>
+                                <i class="fa-solid fa-arrow-left"></i> Back
+                            </button>
+                            <span id="quiz-completion-dot-bar" class="flex gap-1.5 flex-wrap justify-center px-2">
+                                <!-- Pagination indicators filled by JS -->
+                            </span>
+                            <button id="btn-quiz-next" onclick="changeQuizQuestion(1)" class="px-3 py-1.5 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-xs font-bold transition-colors">
+                                Next <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Active Vocab Tooltip Modal Backdrop -->
+    <div id="vocab-modal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-slate-100 animate-pop">
+            <div class="flex items-start justify-between">
+                <div class="flex items-center gap-2">
+                    <span id="vocab-emoji" class="text-2xl">📖</span>
+                    <h3 id="vocab-term" class="text-lg font-black text-slate-900">Vocabulary Definition</h3>
+                </div>
+                <button onclick="closeVocab()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <p id="vocab-def" class="text-sm text-slate-600 mt-3 leading-relaxed">
+                Loading explanation...
+            </p>
+            
+            <div class="mt-4 pt-3 border-t border-slate-50 bg-slate-50/50 p-3 rounded-xl">
+                <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest block mb-1">In Context Example</span>
+                <p id="vocab-ex" class="text-xs italic text-slate-500">
+                    Example sentence goes here...
+                </p>
+            </div>
+
+            <button onclick="closeVocab()" class="mt-4 w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 rounded-xl text-xs">
+                Close Definition
+            </button>
+        </div>
+    </div>
+
+    <footer class="bg-white border-t border-slate-100 py-6 mt-12 text-center text-xs text-slate-400">
+        <div class="max-w-7xl mx-auto px-4">
+            <p>© 2026 Academic Learning Portal • Built with custom features for accessible, differentiated school catch-up learning.</p>
+        </div>
+    </footer>
+
+    <!-- JS Logic -->
+    <script>
+        // Track completed subtasks: hook, match, reading, comprehension, essay, rhythm
+        const completedTasks = {
+            hook: false,
+            match: false,
+            reading: false,
+            comprehension: false,
+            essay: false,
+            poem: false
+        };
+
+        // Track user's quiz state across articles
+        // Structure: { articleKey: { questionIndex: selectedOptionIndexOrStringText } }
+        const userAnswersDb = {};
+
+        // Track current loaded article and active question index
+        let currentPassageKey = 'dystopian';
+        let currentQuestionIdx = 0;
+
+        // Accessibility state
+        let isDyslexiaFont = false;
+        let spacingLevel = 0; // 0: Normal, 1: Wide, 2: Extra Wide
+
+        // Dictionary of terms
+        const vocabularyDb = {
+            perspective: {
+                term: "Perspective",
+                emoji: "👁️",
+                def: "Your individual angle or point of view on a topic. It is shaped by your values, background, and information.",
+                example: "My perspective is that preserving traditional dances helps keep ancient history alive for future school classes."
+            },
+            alarming: {
+                term: "Alarming",
+                emoji: "🚨",
+                def: "Something that causes sudden fear, shock, or worry. In writing, we use this word to warn people that a serious crisis needs fast attention.",
+                example: "The statistics showing lost ancient languages are truly alarming."
+            },
+            heritage: {
+                term: "Heritage",
+                emoji: "🏛️",
+                def: "The valuable history, traditions, languages, and artifacts handed down to us by ancestors from previous generations.",
+                example: "Learning our native songs keeps our heritage vibrant and connects us to past stories."
+            },
+            collaborative: {
+                term: "Collaborative",
+                emoji: "🤝",
+                def: "Done by two or more people working perfectly together to build, create, or solve complex challenges.",
+                example: "When we form collaborative school teams, we discover clever solutions that nobody could find alone."
+            },
+            utopia: {
+                term: "Utopia",
+                emoji: "🏝️",
+                def: "An imagined, perfect island or community where there is no war, corruption, or poverty, and everyone lives in total harmony.",
+                example: "Sir Thomas More's book describes a peaceful utopia where citizens share everything."
+            },
+            ideal: {
+                term: "Ideal",
+                emoji: "⭐",
+                def: "The absolute best possible version of something; perfect and flawless.",
+                example: "A world with zero pollution and clean air is our ideal goal."
+            },
+            dystopia: {
+                term: "Dystopia",
+                emoji: "👁️‍🗨️",
+                def: "An imaginary future place where everything is extremely bad or dangerous, usually controlled by an unfair government or technology.",
+                example: "The scary city in Fahrenheit 451 is a classic sci-fi dystopia."
+            },
+            predator: {
+                term: "Predator",
+                emoji: "🦁",
+                def: "An animal that naturally hunts, catches, and eats other animals for survival.",
+                example: "The mountain lion is an agile, strong predator that hunts deer in the wild forests."
+            },
+            thrive: {
+                term: "Thrive",
+                emoji: "🌿",
+                def: "To grow vigorously, be successful, healthy, and strong.",
+                example: "Cougars and their prey cannot thrive without massive interconnected territories."
+            },
+            endurance: {
+                term: "Endurance",
+                emoji: "🏃",
+                def: "The extreme physical or mental strength to keep going during a difficult, painful, or exhausting challenge.",
+                example: "Running long distances in Chihuahua's deep canyons requires incredible muscle endurance."
+            },
+            facets: {
+                term: "Facets",
+                emoji: "💎",
+                def: "The tiny individual light-sensitive lenses or flat surfaces that make up an insect's compound eye.",
+                example: "A butterfly's eyes have hundreds of facets that let them detect fast movements."
+            },
+            varieties: {
+                term: "Varieties",
+                emoji: "🍑",
+                def: "Distinct types, kinds, or forms of a single fruit or species.",
+                example: "Today, farmers grow over 200 varieties of peaches to resist cold winter weather."
+            },
+            lithosphere: {
+                term: "Lithosphere",
+                emoji: "🌍",
+                def: "The strong, rigid outermost rocky shell of Earth that is broken into large plates.",
+                example: "The lithosphere moves very slowly over millions of years due to hot convection currents."
+            }
+        };
+
+        // Active selection variables for matching logic
+        let selectedExId = null;
+        let selectedExValue = null;
+        let selectedTypeId = null;
+        let selectedTypeValue = null;
+
+        // Extended Passages database featuring 3 multiple-choice and 2 short-answer questions for each article!
+        const passagesDb = {
+            dystopian: {
+                title: "Dark Futures: Dystopian Fiction",
+                author: "by Caitlyn Meagher",
+                content: `
+                    <p>Imagine a world where everything has gone wrong. The government controls the population, people cannot speak freely, and technology watches your every move. Pollution darkens the air and wars are constantly being fought. This is the world of dystopian fiction. This genre explores what a future society could look like if modern-day problems worsen and people fail to solve them.</p>
+                    <p>In some dystopian stories, young protagonists courageously fight against monsters and robots created by advanced technology. This may sound like a frightening world to read about! But these stories are not just meant to scare readers about the future. They also make us think about the problems our world is facing today. That way, we can figure out how to stop these dark, fictional futures from becoming reality.</p>
+                    <p class="font-extrabold text-slate-900 border-l-4 border-teal-500 pl-3 my-3">From Utopia to Dystopia</p>
+                    <p>The ideas in dystopian fiction grew out of the opposite idea: <span class="vocab-word font-bold text-teal-600" onclick="showVocab('utopia', this)">utopia</span>, an imagined <span class="vocab-word font-bold text-teal-600" onclick="showVocab('ideal', this)">ideal</span> place. In 1516, an English writer named Sir Thomas More wrote Utopia. This novel describes an island community where there is no war, corruption, or poverty. Everyone shares goods and lives in harmony. Although earlier philosophers like Plato and Socrates had also imagined perfect worlds, More was the first to use the word "utopia" in his work. Utopia means either "good place" or "no place."</p>
+                    <p>Later writers used More's idea of a perfect place as a point of comparison to write about the opposite: a <span class="vocab-word font-bold text-teal-600" onclick="showVocab('dystopia', this)">dystopia</span>. Dystopian fiction has changed over time to reflect modern social issues, although many of the settings and themes have stayed the same. Ray Bradbury, who wrote Fahrenheit 451, believed his book would serve as a warning sign to help prevent book-burnings. Dystopian worlds warning of authoritarian regimes and overbearing technological oversight remind us that individual freedoms are fragile things that require continuous defense and constant civic awareness.</p>
+                `,
+                questions: [
+                    {
+                        type: "mc",
+                        question: "As used in the text, what does the word \"ideal\" most closely mean?",
+                        options: [
+                            { text: "A. lonely and isolated", correct: false, explanation: "Incorrect. Dystopias might feel lonely, but utopias are perfect communities." },
+                            { text: "B. simple and basic", correct: false, explanation: "Incorrect. A utopia doesn't necessarily mean simple, but perfect and harmonious." },
+                            { text: "C. real and achievable", correct: false, explanation: "Incorrect. Utopias are imaginary models, not necessarily real places." },
+                            { text: "D. perfect and best possible", correct: true, explanation: "Excellent! Sir Thomas More's ideal island represents a perfect, conflict-free society." }
+                        ]
+                    },
+                    {
+                        type: "mc",
+                        question: "What completes the connection between real-world events and dystopian themes?",
+                        options: [
+                            { text: "A. Real problems inspire authors to design fictional warning signs.", correct: true, explanation: "Spot on! Writers utilize current real-world worries to design warning models." },
+                            { text: "B. Dystopias are written only to scare young children.", correct: false, explanation: "Incorrect. Dystopian fiction is meant to engage readers of all ages in critical civic thinking." },
+                            { text: "C. Writers copy histories exactly without altering details.", correct: false, explanation: "Incorrect. They extrapolate or exaggerate trends rather than copy history directly." },
+                            { text: "D. Technology makes dystopian stories impossible to read.", correct: false, explanation: "Incorrect. Technology is a theme within the stories, not a barrier to reading them." }
+                        ]
+                    },
+                    {
+                        type: "mc",
+                        question: "According to Sir Thomas More, the word \"Utopia\" translate directly as:",
+                        options: [
+                            { text: "A. \"War zone\" or \"danger area\"", correct: false, explanation: "Incorrect. That's closer to the definition of a dystopia." },
+                            { text: "B. \"Good place\" or \"no place\"", correct: true, explanation: "Correct! More designed the word to mean both a good place and an imaginary/nonexistent place." },
+                            { text: "C. \"Advanced industrial country\"", correct: false, explanation: "Incorrect. More wrote in 1516, long before the industrial era." },
+                            { text: "D. \"Forest wilderness\"", correct: false, explanation: "Incorrect. It describes a highly coordinated community rather than wilderness." }
+                        ]
+                    },
+                    {
+                        type: "sa",
+                        question: "According to the text, what do authoritarian governments and technological oversight remind us about individual freedoms?"
+                    },
+                    {
+                        type: "sa",
+                        question: "Explain how real-world problems influence the themes found in dystopian fiction."
+                    }
+                ]
+            },
+            lions: {
+                title: "Mountain Lions: Purr-fect Predators",
+                author: "National Fish & Wildlife Foundation",
+                content: `
+                    <p>Have you ever seen a mountain lion? These large wild cats, also called cougars, panthers, pumas, or catamounts, sometimes remind people of pet cats. And indeed, these wild cats can purr like house cats! They are the largest cats that purr instead of roar. But make no mistake - although mountain lions and house cats are related, they are not close relatives. Mountain lions are massive and can grow to more than seven feet in length and weigh more than 200 pounds. That's about twenty times the size of a house cat!</p>
+                    <p>Believe it or not, mountain lions used to live all over the United States and Canada. Sadly, these large cats are no longer found in many places they used to live. They lost their habitats and the animals they prey on to human activity, like development and hunting. Some places even had a reward for hunting mountain lions until the 1900s!</p>
+                    <p>These days, mountain lions can mostly be found in the western United States and Canada. States like California, Montana, and Texas have the largest populations of these large cats. A small group also lives in south Florida. Experts estimate that there are only about 20,000-30,000 total mountain lions in the wild today.</p>
+                    <p class="font-extrabold text-slate-900 border-l-4 border-teal-500 pl-3 my-3">Ecological Balance keepers</p>
+                    <p>Mountain lions are efficient and powerful <span class="vocab-word font-bold text-teal-600" onclick="showVocab('predator', this)">predators</span> with many adaptations. For example, they have long tails to help them maintain their balance when running and jumping. They play a very important role in ecosystems and need protection.</p>
+                    <p>Mountain lions and the animals they prey on cannot <span class="vocab-word font-bold text-teal-600" onclick="showVocab('thrive', this)">thrive</span> without large, connected, wild areas to feed and raise their families. Conserving natural areas ensures that mountain lions and all the other interconnected animals and plants can have healthy ecosystems for generations to come. Conservation groups are continually trying to protect mountain lions by conserving large natural landscapes.</p>
+                `,
+                questions: [
+                    {
+                        type: "mc",
+                        question: "As used in this text excerpt, what does the word \"thrive\" most closely mean?",
+                        options: [
+                            { text: "A. disappear and come back later", correct: false, explanation: "Incorrect. Thriving refers to continuous health and growth, not disappearance." },
+                            { text: "B. grow and live successfully", correct: true, explanation: "Great job! To thrive means to expand, live robustly, and be successful." },
+                            { text: "C. move to new places", correct: false, explanation: "Incorrect. Migration is different from thriving." },
+                            { text: "D. become smaller over time", correct: false, explanation: "Incorrect. Thriving is the opposite of shrinking or failing." }
+                        ]
+                    },
+                    {
+                        type: "mc",
+                        question: "Which anatomical trait helps a mountain lion balance during leaps?",
+                        options: [
+                            { text: "A. Thick layers of fur", correct: false, explanation: "Incorrect. Fur is for warmth and camouflage, not balance." },
+                            { text: "B. Large eyes", correct: false, explanation: "Incorrect. Eyes are optimized for night sight, not mechanical balance." },
+                            { text: "C. A long tail", correct: true, explanation: "Perfect! Their long, heavy tail acts as a counterweight during rapid pursuits and jumps." },
+                            { text: "D. Sharp claws", correct: false, explanation: "Incorrect. Claws are used to capture prey and climb trees." }
+                        ]
+                    },
+                    {
+                        type: "mc",
+                        question: "Why is conserving large connected spaces vital for predators like the mountain lion?",
+                        options: [
+                            { text: "A. It stops them from interacting with other species.", correct: false, explanation: "Incorrect. Interconnecting species is a critical part of healthy ecosystems." },
+                            { text: "B. They require massive territories to secure food and raise families safely.", correct: true, explanation: "Excellent explanation! Mountain lions range over vast distances to find adequate prey." },
+                            { text: "C. Connected spaces prevent weather changes.", correct: false, explanation: "Incorrect. Landscapes do not prevent localized atmospheric changes." },
+                            { text: "D. They refuse to hunt in environments that have trees.", correct: false, explanation: "Incorrect. Mountain lions are highly adapted to forest and mountain regions." }
+                        ]
+                    },
+                    {
+                        type: "sa",
+                        question: "Why did mountain lion populations decrease over time in North America?"
+                    },
+                    {
+                        type: "sa",
+                        question: "Explain why protecting mountain lion habitats is important for entire ecosystems."
+                    }
+                ]
+            },
+            tarahumara: {
+                title: "Running to Hunt, Running for Sport",
+                author: "by Annie Kiyonaga",
+                content: `
+                    <p>Running is a sport practiced by people everywhere around the world. Some people run casually for exercise. Some people train as professional runners, running in races and competing for fast times. For the Tarahumara people, running is an especially important part of their lives and community.</p>
+                    <p>The Tarahumara, or Rarámuri, are an Indigenous people from Chihuahua, Mexico. They are one of the largest Indigenous communities in North America. The area that the Tarahumara live in is known as the Sierra Madre. They are famous around the world for their incredible skill as runners.</p>
+                    <p class="font-extrabold text-slate-900 border-l-4 border-teal-500 pl-3 my-3">Persistence Hunting</p>
+                    <p>Traditionally, the Tarahumara have always valued running skills very highly. This is because of their hunting traditions. The Tarahumara often participated in a form of hunting called 'persistence hunting.' In this mode of hunting, hunters chase animals down on foot. Instead of shooting an animal with a bow and arrow, the Tarahumara hunters would chase it until it died of exhaustion. This technique requires an incredible amount of <span class="vocab-word font-bold text-teal-600" onclick="showVocab('endurance', this)">endurance</span> and speed.</p>
+                    <p class="font-extrabold text-slate-900 border-l-4 border-teal-500 pl-3 my-3">Community & Spiritual Connection</p>
+                    <p>Outside of its importance in hunting traditions, running is closely tied to spiritual beliefs. The Tarahumara people need to be skilled in controlling their breath so they can run for long periods of time. Breath control during long runs represents a direct connection to nature's life energy.</p>
+                    <p>These runs bring families together, uniting them as a community. The Tarahumara are known for their unique cheering style, shouting "Iwériga, iwériga!" during any competitive sport that they may be watching. This cheers on competitors and celebrates traditional team endurance.</p>
+                `,
+                questions: [
+                    {
+                        type: "mc",
+                        question: "As used in this excerpt, what does the word \"endurance\" most closely mean?",
+                        options: [
+                            { text: "A. a special type of bow used for hunting", correct: false, explanation: "Incorrect. Bows are material tools, whereas endurance is a physical capability." },
+                            { text: "B. interest to hunt an animal for food", correct: false, explanation: "Incorrect. Interest is a psychological motivation, not stamina." },
+                            { text: "C. passion for helping feed the community", correct: false, explanation: "Incorrect. Feeding the community is a positive outcome, not the physical action." },
+                            { text: "D. skill to continue doing something difficult", correct: true, explanation: "Excellent! Endurance is the vital physical and mental capability to sustain difficult effort over time." }
+                        ]
+                    },
+                    {
+                        type: "mc",
+                        question: "What is persistence hunting as practiced by Tarahumara historically?",
+                        options: [
+                            { text: "A. Setting complex rope traps on canyon walls", correct: false, explanation: "Incorrect. Persistence hunting does not rely on static mechanical traps." },
+                            { text: "B. Chasing down prey on foot until it collapses from exhaustion", correct: true, explanation: "Correct! The hunter pursues the prey continuously until the animal is too tired to run." },
+                            { text: "C. Using horses to circle animal herds quickly", correct: false, explanation: "Incorrect. The Tarahumara chase on foot, not on horses." },
+                            { text: "D. Ambushing prey from camouflaged nests", correct: false, explanation: "Incorrect. That describes wait-and-see hunting, not persistence running." }
+                        ]
+                    },
+                    {
+                        type: "mc",
+                        question: "What does the word \"Iwériga\" mean as shouted by supporters?",
+                        options: [
+                            { text: "A. \"Breath\" or \"Life Force\"", correct: true, explanation: "Yes! Iwériga translates to breath/spirit and encourages physical resilience." },
+                            { text: "B. \"Stop running now\"", correct: false, explanation: "Incorrect. It is a motivating, positive cheer to keep running." },
+                            { text: "C. \"Watch the sky\"", correct: false, explanation: "Incorrect. It focuses on internal spirit and energy rather than sky watching." },
+                            { text: "D. \"Rest and drink\"", correct: false, explanation: "Incorrect. The runners continue to maintain momentum." }
+                        ]
+                    },
+                    {
+                        type: "sa",
+                        question: "How is breathing connected to the Tarahumara people's spirituality?"
+                    },
+                    {
+                        type: "sa",
+                        question: "How do the Tarahumara's running traditions bring them together as a community?"
+                    }
+                ]
+            },
+            butterfly: {
+                title: "Butterfly Anatomy: Colorful Wings",
+                author: "American Museum of Natural History",
+                content: `
+                    <p>When you think of a butterfly, what comes to your mind? Many people immediately think of butterflies' colorful and patterned wings! The colors and patterns on butterfly wings come from tiny scales. Each scale can contain granules of pigment or have a texture that produces a color or effect. Together, these scales add up like pixels in an image.</p>
+                    <p>Each scale attaches individually, allowing them to break off and help butterflies escape from sticky spider webs. Scales are a defining feature of butterflies and moths, which is why the scientific name of their order, Lepidoptera, comes from lepidos and ptera, the Greek words for "scale" and "wing."</p>
+                    <p class="font-extrabold text-slate-900 border-l-4 border-teal-500 pl-3 my-3">Amazing Senses</p>
+                    <p>Butterflies have amazing senses. They have many of the same senses as us humans, but often use different organs. Like other insects, butterflies have compound eyes made from hundreds of light-sensitive units called <span class="vocab-word font-bold text-teal-600" onclick="showVocab('facets', this)">facets</span>. Each segment is like a little eye with its own lens and light sensor. These eyes can detect motion and color, and even see ultraviolet light, which is completely invisible to human eyes.</p>
+                    <p>Butterflies also taste with cells on their feet! This helps them instantly recognize nectar when they land on a flower.</p>
+                    <p class="font-extrabold text-slate-900 border-l-4 border-teal-500 pl-3 my-3">Defense Mechanisms</p>
+                    <p>Butterflies are different from moths and have colorful wings, amazing senses, and different ways they protect themselves. Some protect themselves against predators by warning predators with toxins in their bodies, blending into nature with camouflage, or mimicking other poisonous butterflies. The Monarch and Viceroy butterflies, for example, are both poisonous and have evolved to look like each other to scare predators away!</p>
+                `,
+                questions: [
+                    {
+                        type: "mc",
+                        question: "What are scale pixels used for in butterfly survival?",
+                        options: [
+                            { text: "A. They help the butterfly sleep better", correct: false, explanation: "Incorrect. Scales are not sleep aids." },
+                            { text: "B. They break off to let them escape spider webs", correct: true, explanation: "Correct! The scales easily detach, allowing the insect to slip out of spider silk." },
+                            { text: "C. They absorb carbon dioxide from the air", correct: false, explanation: "Incorrect. Carbon dioxide absorption is not a function of scale pixels." },
+                            { text: "D. They make butterflies heavy so they don't fly away", correct: false, explanation: "Incorrect. Scales are incredibly light, supporting flight, not weighing them down." }
+                        ]
+                    },
+                    {
+                        type: "mc",
+                        question: "What are compound eyes' facets?",
+                        options: [
+                            { text: "A. Individual lenses that see separate pieces of the picture", correct: true, explanation: "Well done! Each facet is a distinct light-receptive segment contributing to a combined mosaic view." },
+                            { text: "B. Tiny hairs on their feet used to taste nectar", correct: false, explanation: "Incorrect. Tasting hairs on feet are sensory receptors, but they are not facets." },
+                            { text: "C. Air pipes on the abdomen used to breathe", correct: false, explanation: "Incorrect. Insects breathe through spiracles, not eye segments." },
+                            { text: "D. Poison cells located on the wing tip", correct: false, explanation: "Incorrect. Wings are composed of scales and membranes, not eye segments." }
+                        ]
+                    },
+                    {
+                        type: "mc",
+                        question: "What scientific name describes butterflies' order, meaning \"scale-wing\"?",
+                        options: [
+                            { text: "A. Arachnida", correct: false, explanation: "Incorrect. Arachnida contains spiders and ticks." },
+                            { text: "B. Lepidoptera", correct: true, explanation: "Perfect! Lepidoptera derives from Greek words meaning scale (lepidos) and wing (ptera)." },
+                            { text: "C. Hymenoptera", correct: false, explanation: "Incorrect. This contains wasps, bees, and ants." },
+                            { text: "D. Carnivora", correct: false, explanation: "Incorrect. Carnivora is a mammalian order of meat-eaters." }
+                        ]
+                    },
+                    {
+                        type: "sa",
+                        question: "Describe two ways butterflies protect themselves against predators."
+                    },
+                    {
+                        type: "sa",
+                        question: "How do butterflies use the cells on their feet?"
+                    }
+                ]
+            },
+            peaches: {
+                title: "The Evolutionary Story of Peaches",
+                author: "by Caitlyn Meagher",
+                content: `
+                    <p>Take a look around a grocery store. Do you see round red apples, juicy red tomatoes, and large orange peaches? You may think these fruits and vegetables have always looked and tasted like they do now. But that is not always the case! Many of the fruits and vegetables you can find in the grocery store have been designed to be a certain way through a process called artificial selection. Through this process, humans influence the way species reproduce to make sure certain traits are maintained or emphasized.</p>
+                    <p>This process provides a stark contrast to natural selection—the evolutionary process that occurs over thousands or millions of years, leading to gradual changes in species' traits. Let's explore these two different mechanisms.</p>
+                    <p>Natural selection is the slow evolutionary process by which organisms adapt and change over time based on their environment. Since individuals in a species all have slightly different traits, some individuals have traits that are better suited to their environment. The individuals with these beneficial traits are more likely to survive and reproduce. They pass along these traits to their offspring.</p>
+                    <p class="font-extrabold text-slate-900 border-l-4 border-teal-500 pl-3 my-3">Modern Variety Creation</p>
+                    <p>Artificial selection takes less time than natural selection because humans can intentionally select and cross-pollinate the fruits and vegetables. More than 2.5 million years ago in China, wild peaches were small and sour. But through artificial selection, they became larger and sweeter.</p>
+                    <p>Today, farmers continue to test and grow over 200 different <span class="vocab-word font-bold text-teal-600" onclick="showVocab('varieties', this)">varieties</span> of peaches. They see which ones are best adapted to specific environments. They also create varieties that can resist certain pests or that have a particular flavor that people enjoy. These improvements make them an even more delicious and nutritious snack!</p>
+                `,
+                questions: [
+                    {
+                        type: "mc",
+                        question: "As used in this excerpt, what does the word \"varieties\" most closely mean?",
+                        options: [
+                            { text: "A. different kinds", correct: true, explanation: "Absolutely correct! Varieties refers to different cultivated sorts or types of a fruit." },
+                            { text: "B. levels of comfort", correct: false, explanation: "Incorrect. Varieties does not signify comfort." },
+                            { text: "C. pieces of information", correct: false, explanation: "Incorrect. Data is information, not biological varieties." },
+                            { text: "D. units of sweetness", correct: false, explanation: "Incorrect. This is a culinary characteristic, not a taxonomic or agricultural category." }
+                        ]
+                    },
+                    {
+                        type: "mc",
+                        question: "How does artificial selection contrast with natural selection?",
+                        options: [
+                            { text: "A. Natural selection is controlled directly by humans.", correct: false, explanation: "Incorrect. Humans guide artificial selection; nature guides natural selection." },
+                            { text: "B. Artificial selection is guided by humans, while natural selection happens naturally.", correct: true, explanation: "Correct! Artificial selection is driven by human preference, while natural selection is driven by environmental fitness." },
+                            { text: "C. Artificial selection occurs over millions of years.", correct: false, explanation: "Incorrect. Artificial selection is typically much faster than natural selection." },
+                            { text: "D. Natural selection changes only rocks, not organisms.", correct: false, explanation: "Incorrect. Natural selection acts on living biological organisms." }
+                        ]
+                    },
+                    {
+                        type: "mc",
+                        question: "What trait are modern farmers likely to select when breeding new peaches?",
+                        options: [
+                            { text: "A. Slow growth rate", correct: false, explanation: "Incorrect. Farmers prefer efficient, fast food production." },
+                            { text: "B. Increased pest susceptibility", correct: false, explanation: "Incorrect. Farmers select for pest resistance, not susceptibility." },
+                            { text: "C. Pest resistance and popular flavor properties", correct: true, explanation: "Correct! These characteristics improve yield and crop value." },
+                            { text: "D. Sour taste and tough seed shells", correct: false, explanation: "Incorrect. Consumers prefer sweet, easy-to-eat fruit." }
+                        ]
+                    },
+                    {
+                        type: "sa",
+                        question: "How have humans changed peaches over time using artificial selection?"
+                    },
+                    {
+                        type: "sa",
+                        question: "Why might farmers want to create new varieties of peaches today?"
+                    }
+                ]
+            },
+            tectonics: {
+                title: "Earth's Dynamic Machine: Plate Tectonics",
+                author: "American Museum of Natural History",
+                content: `
+                    <p>The <span class="vocab-word font-bold text-teal-600" onclick="showVocab('lithosphere', this)">lithosphere</span>, the rigid, strong outermost shell of Earth, is broken into ten large plates. The mantle below those plates is solid rock. However, over time and at high temperatures and pressures - the solid rock of the mantle very slowly flows in enormous circular motions called convective currents. These currents cause the plates to move, a process geologists describe with the theory of plate tectonics.</p>
+                    <p>Because of plate tectonics, Earth's surface is in constant motion. Plates separate. They slip past one another. They even collide with each other. Arabia, for instance, pulls away from Africa, opening up the Red Sea. North America creeps away from Europe at about one inch per year—roughly the rate at which a human fingernail grows!</p>
+                    <p>Large regions of the Pacific seafloor dive beneath the surrounding continents. And as India pushes north into Asia, it creates the world-famous mountain range called the Himalayas.</p>
+                    <p class="font-extrabold text-slate-900 border-l-4 border-teal-500 pl-3 my-3">Mountain Building & Eruptions</p>
+                    <p>Where plates separate, or diverge, ocean basins are created. In the Atlantic Ocean, there is a divergent plate boundary (or mid-ocean ridge) that is part of a 50,000-mile long system of mountain ranges. 85% of Earth's volcanic eruptions occur along divergent boundaries.</p>
+                    <p>When continental plates slam together directly, the crushing force folds the crust upward, constructing massive mountain systems. Subduction is when oceanic and continental plates converge and the oceanic plate sinks below the continental plate because it is colder and denser. This process usually produces volcanic mountain chains on the overlying continental plate, such as the Andes in South America.</p>
+                `,
+                questions: [
+                    {
+                        type: "mc",
+                        question: "What is the main driver behind the motion of tectonic plates?",
+                        options: [
+                            { text: "A. Ocean water currents sliding along sand", correct: false, explanation: "Incorrect. Water currents affect coastal erosion, not deep crustal motion." },
+                            { text: "B. Slow, hot convective currents flowing in the mantle", correct: true, explanation: "Excellent! The slow circular heat transfer in the mantle shifts the solid plates above." },
+                            { text: "C. Gravitational pull from the moon", correct: false, explanation: "Incorrect. Lunar gravity drives oceanic tides, not tectonics." },
+                            { text: "D. Extreme wind storms pushing the crust", correct: false, explanation: "Incorrect. Wind is atmospheric and does not have the force to shift tectonic plates." }
+                        ]
+                    },
+                    {
+                        type: "mc",
+                        question: "What percentage of Earth's volcanic activity occurs along separating plates?",
+                        options: [
+                            { text: "A. 15%", correct: false, explanation: "Incorrect. Volcanoes are much more common along divergent margins." },
+                            { text: "B. 50%", correct: false, explanation: "Incorrect. The actual proportion is much higher than half." },
+                            { text: "C. 85%", correct: true, explanation: "Correct! The vast majority of eruptions happen under oceans along divergent margins." },
+                            { text: "D. 99%", correct: false, explanation: "Incorrect. Although very high, other areas (like subduction zones) account for the remaining 15%." }
+                        ]
+                    },
+                    {
+                        type: "mc",
+                        question: "What type of crustal boundary is formed where continental plates slam together?",
+                        options: [
+                            { text: "A. Divergent boundary", correct: false, explanation: "Incorrect. Divergent boundaries are where plates pull apart." },
+                            { text: "B. Convergent boundary", correct: true, explanation: "Yes! Convergent boundaries are where plates collide, folding the crust upward into mountains." },
+                            { text: "C. Transform boundary", correct: false, explanation: "Incorrect. Transform boundaries are where plates slide past each other." },
+                            { text: "D. Deep core ridge", correct: false, explanation: "Incorrect. Ridges are associated with spreading centers, not continental collision zones." }
+                        ]
+                    },
+                    {
+                        type: "sa",
+                        question: "What happens when an oceanic plate subducts below a continental plate?"
+                    },
+                    {
+                        type: "sa",
+                        question: "Describe what happens at a divergent plate boundary."
+                    }
+                ]
+            }
+        };
+
+        // Navigation state controllers
+        function enterQuest(questType) {
+            // Hide Home Hub
+            document.getElementById('portal-home').classList.add('hidden');
+            
+            // Hide all workspaces
+            document.getElementById('portal-writing').classList.add('hidden');
+            document.getElementById('portal-reading').classList.add('hidden');
+
+            if (questType === 'writing') {
+                document.getElementById('portal-writing').classList.remove('hidden');
+                switchTab('tab-intro');
+            } else if (questType === 'reading') {
+                document.getElementById('portal-reading').classList.remove('hidden');
+                // Ensure correct state loaded
+                loadPassage(currentPassageKey);
+            }
+        }
+
+        function goToHome() {
+            document.getElementById('portal-writing').classList.add('hidden');
+            document.getElementById('portal-reading').classList.add('hidden');
+            document.getElementById('portal-home').classList.remove('hidden');
+        }
+
+        // Initialize from local memory if available
+        window.onload = function() {
+            const savedHook = localStorage.getItem('quest_hook');
+            if (savedHook) {
+                completedTasks.hook = true;
+                const fb = document.getElementById('hook-feedback');
+                if (fb) {
+                    fb.className = "mt-4 p-3 rounded-xl text-sm font-semibold flex items-center gap-2 bg-emerald-100 text-emerald-800";
+                    fb.innerHTML = `🌟 Completed! Hook selection registered successfully.`;
+                }
+            }
+
+            const savedMatch = localStorage.getItem('quest_match');
+            if (savedMatch) {
+                completedTasks.match = true;
+                const fb = document.getElementById('matching-feedback');
+                if (fb) {
+                    fb.className = "mt-4 p-3 rounded-xl text-sm font-semibold bg-emerald-100 text-emerald-800";
+                    fb.innerText = "🏆 Complete! Rhetoric devices correctly identified.";
+                }
+            }
+
+            const savedReading = localStorage.getItem('quest_reading');
+            if (savedReading) {
+                completedTasks.reading = true;
+            }
+
+            const savedComprehension = localStorage.getItem('quest_comprehension');
+            if (savedComprehension) {
+                completedTasks.comprehension = true;
+            }
+
+            const savedEssay = localStorage.getItem('quest_essay');
+            if (savedEssay) {
+                completedTasks.essay = true;
+                // pre-populate values
+                document.getElementById('draft-hook').value = localStorage.getItem('essay_hook_txt') || '';
+                document.getElementById('draft-body').value = localStorage.getItem('essay_body_txt') || '';
+                document.getElementById('draft-refute').value = localStorage.getItem('essay_refute_txt') || '';
+                document.getElementById('draft-conclusion').value = localStorage.getItem('essay_conclusion_txt') || '';
+                
+                // restore checkboxes
+                document.getElementById('check-hook').checked = true;
+                document.getElementById('check-reason').checked = true;
+                document.getElementById('check-ending').checked = true;
+            }
+
+            const savedPoem = localStorage.getItem('quest_poem');
+            if (savedPoem) {
+                completedTasks.poem = true;
+            }
+
+            // Restore user's saved comprehension answers from local storage if any
+            const savedUserAnswers = localStorage.getItem('user_answers_db');
+            if (savedUserAnswers) {
+                try {
+                    Object.assign(userAnswersDb, JSON.parse(savedUserAnswers));
+                } catch(e) {}
+            }
+
+            updateProgressBar();
+            transformText();
+            loadPassage('dystopian');
+        };
+
+        // Tab switcher inside writing panel
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(el => {
+                el.className = "w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-left text-sm font-semibold transition-all duration-150 text-slate-600 hover:bg-slate-50 hover:text-slate-900";
+            });
+
+            document.getElementById(tabId).classList.add('active');
+            
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.className = "w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-left text-sm font-semibold transition-all duration-150 bg-indigo-50 text-indigo-700";
+            }
+        }
+
+        // Accessibility triggers
+        function toggleDyslexiaMode() {
+            const body = document.getElementById('body-root');
+            isDyslexiaFont = !isDyslexiaFont;
+            
+            if (isDyslexiaFont) {
+                body.classList.add('dyslexia-mode');
+                document.getElementById('font-toggle-text').innerText = "Dyslexia Font: ON";
+            } else {
+                body.classList.remove('dyslexia-mode');
+                document.getElementById('font-toggle-text').innerText = "Dyslexia Font: OFF";
+            }
+        }
+
+        function toggleLineSpacing() {
+            const body = document.getElementById('body-root');
+            spacingLevel = (spacingLevel + 1) % 3;
+            
+            body.classList.remove('tracking-wide', 'tracking-widest');
+            
+            if (spacingLevel === 1) {
+                body.classList.add('tracking-wide');
+            } else if (spacingLevel === 2) {
+                body.classList.add('tracking-widest');
+            }
+        }
+
+        // Vocabulary Helper tooltips
+        function showVocab(wordKey, originElement) {
+            const item = vocabularyDb[wordKey];
+            if (!item) return;
+
+            document.getElementById('vocab-term').innerText = item.term;
+            document.getElementById('vocab-emoji').innerText = item.emoji;
+            document.getElementById('vocab-def').innerText = item.def;
+            document.getElementById('vocab-ex').innerText = `"${item.example}"`;
+
+            document.getElementById('vocab-modal').classList.remove('hidden');
+        }
+
+        function closeVocab() {
+            document.getElementById('vocab-modal').classList.add('hidden');
+        }
+
+        // Check Hook Answer (Section 1 Checkpoint)
+        function checkHookAnswer(status, element) {
+            const feedback = document.getElementById('hook-feedback');
+            feedback.classList.remove('hidden');
+
+            if (status === 'correct') {
+                feedback.className = "mt-4 p-3 rounded-xl text-sm font-semibold flex items-center gap-2 bg-emerald-100 text-emerald-800 animate-pop";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-check"></i> <strong>Excellent Assessment!</strong> Option B is correct. It utilizes descriptive details and sensory focus to interest the reader immediately.`;
+                
+                completedTasks.hook = true;
+                localStorage.setItem('quest_hook', 'true');
+                updateProgressBar();
+            } else {
+                feedback.className = "mt-4 p-3 rounded-xl text-sm font-semibold flex items-center gap-2 bg-amber-100 text-amber-800 animate-pop";
+                feedback.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> That structure is functional, but another option contains a more vivid description.`;
+            }
+        }
+
+        // Flip Techniques flashcard
+        function flipCard(cardId) {
+            const card = document.getElementById(cardId);
+            const front = document.getElementById(cardId + '-front');
+            const back = document.getElementById(cardId + '-back');
+
+            if (front.classList.contains('hidden')) {
+                front.classList.remove('hidden');
+                back.classList.add('hidden');
+                card.classList.replace('bg-indigo-900', 'bg-slate-50');
+                card.classList.replace('text-white', 'text-indigo-950');
+            } else {
+                front.classList.add('hidden');
+                back.classList.remove('hidden');
+                card.classList.replace('bg-slate-50', 'bg-indigo-900');
+                card.classList.replace('text-indigo-950', 'text-white');
+            }
+        }
+
+        // Match-The-Technique selection logic
+        function selectMatch(side, elementId, value) {
+            if (side === 'ex') {
+                document.querySelectorAll('#match-examples-list button').forEach(el => el.classList.remove('bg-amber-100', 'border-amber-400', 'ring-2', 'ring-amber-500'));
+                selectedExId = elementId;
+                selectedExValue = value;
+                document.getElementById(elementId).classList.add('bg-amber-100', 'border-amber-400', 'ring-2', 'ring-amber-500');
+            } else {
+                document.querySelectorAll('#match-types-list button').forEach(el => el.classList.remove('bg-amber-100', 'border-amber-400', 'ring-2', 'ring-amber-500'));
+                selectedTypeId = elementId;
+                selectedTypeValue = value;
+                document.getElementById(elementId).classList.add('bg-amber-100', 'border-amber-400', 'ring-2', 'ring-amber-500');
+            }
+
+            if (selectedExValue && selectedTypeValue) {
+                const feedback = document.getElementById('matching-feedback');
+                feedback.classList.remove('hidden');
+
+                if (selectedExValue === selectedTypeValue) {
+                    feedback.className = "mt-4 p-3 rounded-xl text-sm font-semibold bg-emerald-100 text-emerald-800 animate-pop";
+                    feedback.innerText = `✨ Correct match: "${selectedExValue}" successfully identified.`;
+                    
+                    const matchedEx = document.getElementById(selectedExId);
+                    const matchedType = document.getElementById(selectedTypeId);
+                    
+                    matchedEx.disabled = true;
+                    matchedType.disabled = true;
+                    matchedEx.className = "w-full text-left p-3.5 bg-emerald-100 border border-emerald-300 rounded-xl text-sm font-semibold text-emerald-800 cursor-not-allowed opacity-80 flex justify-between items-center";
+                    matchedEx.innerHTML += ` <i class="fa-solid fa-check"></i>`;
+
+                    matchedType.className = "w-full text-left p-3.5 bg-emerald-100 border border-emerald-300 rounded-xl text-sm font-semibold text-emerald-800 cursor-not-allowed opacity-80 flex justify-between items-center";
+                    matchedType.innerHTML = `<span>${selectedTypeValue}</span> <span class="text-xs bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded">Identified</span>`;
+
+                    checkAllMatched();
+                } else {
+                    feedback.className = "mt-4 p-3 rounded-xl text-sm font-semibold bg-rose-100 text-rose-800 animate-pop";
+                    feedback.innerText = "❌ Incorrect pairing. Re-read the definition cards and retry.";
+                    
+                    document.getElementById(selectedExId).classList.remove('bg-amber-100', 'border-amber-400', 'ring-2', 'ring-amber-500');
+                    document.getElementById(selectedTypeId).classList.remove('bg-amber-100', 'border-amber-400', 'ring-2', 'ring-amber-500');
+                }
+
+                selectedExId = null;
+                selectedExValue = null;
+                selectedTypeId = null;
+                selectedTypeValue = null;
+            }
+        }
+
+        function checkAllMatched() {
+            const totalItems = document.querySelectorAll('#match-examples-list button:not([disabled])').length;
+            if (totalItems === 0) {
+                const feedback = document.getElementById('matching-feedback');
+                feedback.className = "mt-4 p-3 rounded-xl text-sm font-semibold bg-emerald-500 text-white text-center animate-pop";
+                feedback.innerText = "🏆 Complete! You have successfully identified all core persuasive devices.";
+                
+                completedTasks.match = true;
+                localStorage.setItem('quest_match', 'true');
+                updateProgressBar();
+            }
+        }
+
+        // Section 3 Analysis Checks
+        let q1Correct = false;
+        let q2Correct = false;
+
+        function checkAnalysisAnswer(status, element) {
+            const feedback = document.getElementById('analysis-feedback');
+            feedback.classList.remove('hidden');
+
+            if (status === 'q1-correct') {
+                q1Correct = true;
+                element.className = "w-full text-left p-2.5 bg-emerald-600 border border-emerald-500 rounded-lg text-xs transition-colors font-bold";
+            } else if (status === 'q1-wrong') {
+                element.className = "w-full text-left p-2.5 bg-rose-800/80 border border-rose-600 rounded-lg text-xs transition-colors";
+            } else if (status === 'q2-correct') {
+                q2Correct = true;
+                element.className = "w-full text-left p-2.5 bg-emerald-600 border border-emerald-500 rounded-lg text-xs transition-colors font-bold";
+            } else if (status === 'q2-wrong') {
+                element.className = "w-full text-left p-2.5 bg-rose-800/80 border border-rose-600 rounded-lg text-xs transition-colors";
+            }
+
+            if (q1Correct && q2Correct) {
+                feedback.className = "mt-4 p-3 rounded-xl text-xs font-semibold bg-emerald-500 text-white text-center animate-pop";
+                feedback.innerText = "🎉 All elements identified! You have located both the hook and the counterargument structure.";
+                
+                completedTasks.reading = true;
+                localStorage.setItem('quest_reading', 'true');
+                updateProgressBar();
+            } else {
+                feedback.className = "mt-4 p-3 rounded-xl text-xs font-semibold bg-indigo-800 text-indigo-200 text-center";
+                feedback.innerText = "Please complete both questions to verify your analysis.";
+            }
+        }
+
+        // Dynamic Multi-Question Passage Loader
+        function loadPassage(passageKey) {
+            currentPassageKey = passageKey;
+            currentQuestionIdx = 0; // Reset question index to first question of the new passage
+            
+            const passage = passagesDb[passageKey];
+            if (!passage) return;
+
+            // Highlight chosen button
+            document.querySelectorAll('[id^="btn-pass-"]').forEach(btn => {
+                btn.className = "p-2.5 bg-white text-slate-700 hover:bg-slate-50 text-xs font-bold rounded-xl border border-slate-200 transition-all text-center";
+            });
+            const activeBtn = document.getElementById('btn-pass-' + passageKey);
+            if (activeBtn) {
+                activeBtn.className = "p-2.5 bg-teal-600 text-white text-xs font-bold rounded-xl shadow-sm border border-teal-500 transition-all text-center";
+            }
+
+            // Update viewer text
+            document.getElementById('passage-title').innerHTML = `<i class="fa-solid fa-file-invoice text-teal-600"></i> ${passage.title}`;
+            document.getElementById('passage-author').innerText = passage.author;
+            document.getElementById('passage-body-content').innerHTML = passage.content;
+
+            // Initialize userAnswersDb entry for this passage if it doesn't exist
+            if (!userAnswersDb[passageKey]) {
+                userAnswersDb[passageKey] = Array(passage.questions.length).fill(null);
+            }
+
+            // Render current question
+            renderActiveQuizQuestion();
+        }
+
+        // Render current question under the selected passage
+        function renderActiveQuizQuestion() {
+            const passage = passagesDb[currentPassageKey];
+            const questionData = passage.questions[currentQuestionIdx];
+            
+            // Set dynamic header count text
+            document.getElementById('quiz-question-number').innerText = `Question ${currentQuestionIdx + 1} of ${passage.questions.length}`;
+            
+            // Set question text
+            document.getElementById('quiz-question-text').innerText = questionData.question;
+
+            // Render options/input based on question type
+            const optionsBox = document.getElementById('quiz-options-box');
+            if (questionData.type === "mc") {
+                // Check if user has already answered this question
+                const savedAnswerIndex = userAnswersDb[currentPassageKey][currentQuestionIdx];
+                
+                let optionsHtml = "";
+                questionData.options.forEach((opt, idx) => {
+                    const buttonId = `opt-${idx}`;
+                    
+                    // Set custom color classes depending on if it has been answered
+                    let borderClass = "border-slate-700";
+                    let bgClass = "bg-slate-950/50 hover:bg-slate-950";
+                    let iconHtml = "";
+
+                    if (savedAnswerIndex !== null && typeof savedAnswerIndex === 'number') {
+                        if (idx === savedAnswerIndex) {
+                            if (opt.correct) {
+                                borderClass = "border-emerald-500";
+                                bgClass = "bg-emerald-600/30 text-emerald-100";
+                                iconHtml = `<i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i>`;
+                            } else {
+                                borderClass = "border-rose-500";
+                                bgClass = "bg-rose-950/40 text-rose-100";
+                                iconHtml = `<i class="fa-solid fa-circle-xmark text-rose-400 shrink-0"></i>`;
+                            }
+                        } else if (opt.correct) {
+                            // Reveal the correct one even if the user picked wrong
+                            borderClass = "border-emerald-600/50";
+                            bgClass = "bg-emerald-950/20";
+                        }
+                    }
+
+                    optionsHtml += `
+                        <button onclick="handleOptionClick(${idx})" id="${buttonId}" class="w-full text-left p-3 border ${borderClass} ${bgClass} rounded-xl text-xs transition-colors flex justify-between items-center gap-2">
+                            <span>${opt.text}</span>
+                            ${iconHtml}
+                        </button>
+                    `;
+                });
+                optionsBox.innerHTML = optionsHtml;
+            } else if (questionData.type === "sa") {
+                const savedText = userAnswersDb[currentPassageKey][currentQuestionIdx] || "";
+                optionsBox.innerHTML = `
+                    <div class="space-y-2">
+                        <textarea id="sa-input" rows="4" class="w-full text-sm border border-slate-700 focus:ring-2 focus:ring-teal-500 rounded-xl p-3 bg-slate-900 text-slate-100 placeholder-slate-500" placeholder="Type your response here...">${savedText}</textarea>
+                        <button onclick="handleShortAnswerSave()" class="w-full bg-teal-600 hover:bg-teal-500 text-white font-bold py-2 px-4 rounded-xl transition-all">Save Response</button>
+                    </div>
+                `;
+            }
+
+            // Set up Pagination Indicators dots
+            let dotBarHtml = "";
+            for (let i = 0; i < passage.questions.length; i++) {
+                const isCurrent = i === currentQuestionIdx;
+                const isAnswered = userAnswersDb[currentPassageKey][i] !== null;
+                
+                let dotClass = "bg-slate-700";
+                if (isCurrent) {
+                    dotClass = "bg-teal-400 ring-2 ring-teal-500/50";
+                } else if (isAnswered) {
+                    if (passage.questions[i].type === "mc") {
+                        // Check if answer is correct to color code dot green or red
+                        const answeredIdx = userAnswersDb[currentPassageKey][i];
+                        const isCorrect = passage.questions[i].options[answeredIdx].correct;
+                        dotClass = isCorrect ? "bg-emerald-500" : "bg-rose-500";
+                    } else if (passage.questions[i].type === "sa") {
+                         // Short answer completed
+                         dotClass = "bg-indigo-500";
+                    }
+                }
+                
+                dotBarHtml += `<span class="h-2 w-2 rounded-full ${dotClass} transition-colors"></span>`;
+            }
+            document.getElementById('quiz-completion-dot-bar').innerHTML = dotBarHtml;
+
+            // Set up Next/Prev button disabled states
+            document.getElementById('btn-quiz-prev').disabled = currentQuestionIdx === 0;
+            
+            const isLastQuestion = currentQuestionIdx === passage.questions.length - 1;
+            const nextBtn = document.getElementById('btn-quiz-next');
+            if (isLastQuestion) {
+                nextBtn.innerHTML = `Complete <i class="fa-solid fa-check"></i>`;
+                nextBtn.className = "px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-colors";
+            } else {
+                nextBtn.innerHTML = `Next <i class="fa-solid fa-arrow-right"></i>`;
+                nextBtn.className = "px-3 py-1.5 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-xs font-bold transition-colors";
+            }
+
+            // Render current feedback container if answered and it's a multiple choice question
+            const feedbackEl = document.getElementById('comp-feedback');
+            if (questionData.type === "mc" && userAnswersDb[currentPassageKey][currentQuestionIdx] !== null) {
+                const savedAnswerIndex = userAnswersDb[currentPassageKey][currentQuestionIdx];
+                const chosenOption = questionData.options[savedAnswerIndex];
+                feedbackEl.classList.remove('hidden');
+                
+                if (chosenOption.correct) {
+                    feedbackEl.className = "p-3 rounded-xl text-xs font-bold bg-emerald-500 text-white text-center mb-4 animate-pop";
+                    feedbackEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> Correct! ${chosenOption.explanation}`;
+                } else {
+                    feedbackEl.className = "p-3 rounded-xl text-xs font-semibold bg-rose-950 text-rose-300 text-center mb-4 animate-pop";
+                    feedbackEl.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> ${chosenOption.explanation}`;
+                }
+            } else if (questionData.type === "sa" && userAnswersDb[currentPassageKey][currentQuestionIdx] !== null) {
+                feedbackEl.classList.remove('hidden');
+                feedbackEl.className = "p-3 rounded-xl text-xs font-bold bg-indigo-500 text-white text-center mb-4 animate-pop";
+                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> Response Saved!`;
+            } else {
+                feedbackEl.classList.add('hidden');
+            }
+        }
+
+        // Handle selection of option
+        function handleOptionClick(selectedIdx) {
+            // Save answer state locally
+            userAnswersDb[currentPassageKey][currentQuestionIdx] = selectedIdx;
+            localStorage.setItem('user_answers_db', JSON.stringify(userAnswersDb));
+
+            // Refresh UI to display colors and explanations
+            renderActiveQuizQuestion();
+
+            // Track if overall comprehension task is completed
+            checkReadingComprehensionProgress();
+        }
+
+        function handleShortAnswerSave() {
+            const inputVal = document.getElementById('sa-input').value.trim();
+            if (inputVal === "") return;
+
+            // Save answer state locally
+            userAnswersDb[currentPassageKey][currentQuestionIdx] = inputVal;
+            localStorage.setItem('user_answers_db', JSON.stringify(userAnswersDb));
+
+            // Refresh UI to display colors and explanations
+            renderActiveQuizQuestion();
+
+            // Track if overall comprehension task is completed
+            checkReadingComprehensionProgress();
+        }
+
+        // Pagination buttons
+        function changeQuizQuestion(direction) {
+            const passage = passagesDb[currentPassageKey];
+            const targetIdx = currentQuestionIdx + direction;
+            
+            if (targetIdx >= 0 && targetIdx < passage.questions.length) {
+                currentQuestionIdx = targetIdx;
+                renderActiveQuizQuestion();
+            } else if (targetIdx === passage.questions.length) {
+                // If clicked "Complete" on last question, give validation alert
+                const answeredCount = userAnswersDb[currentPassageKey].filter(ans => ans !== null).length;
+                if (answeredCount < passage.questions.length) {
+                    showVocabNotification("Review Incomplete", `Please respond to all ${passage.questions.length} questions within this article before finalizing.`);
+                } else {
+                    // Check if everything is correct (for MC questions)
+                    const correctCount = userAnswersDb[currentPassageKey].reduce((total, ans, qIdx) => {
+                        const questionData = passage.questions[qIdx];
+                        if (questionData.type === "mc") {
+                            const isCorrect = questionData.options[ans].correct;
+                            return total + (isCorrect ? 1 : 0);
+                        }
+                        return total; // SA questions don't have an auto-correct count
+                    }, 0);
+                    
+                    const mcCount = passage.questions.filter(q => q.type === "mc").length;
+
+                    showVocabNotification(
+                        "Assessment Submitted!", 
+                        `You have completed the diagnostic check for this article with a score of ${correctCount}/${mcCount} correct multiple-choice answers, plus your short responses! Keep up the incredible reading progress.`
+                    );
+                }
+            }
+        }
+
+        // Scan if user has answered all questions across all passages
+        function checkReadingComprehensionProgress() {
+            // Let's determine if they finished at least 1 full article cleanly (all correct for MC, filled out for SA) to log the Comprehension task
+            let finishedArticlesCount = 0;
+
+            Object.keys(passagesDb).forEach(articleKey => {
+                const answers = userAnswersDb[articleKey];
+                if (answers) {
+                    const allAnswered = answers.every(ans => ans !== null);
+                    if (allAnswered) {
+                        // Check if all answered MC options are correct
+                        const allCorrect = answers.every((ans, qIdx) => {
+                            const questionData = passagesDb[articleKey].questions[qIdx];
+                            if (questionData.type === "mc") {
+                                return questionData.options[ans].correct;
+                            }
+                            return true; // SA questions are assumed 'correct' if filled out
+                        });
+                        if (allCorrect) {
+                            finishedArticlesCount++;
+                        }
+                    }
+                }
+            });
+
+            if (finishedArticlesCount >= 1) {
+                completedTasks.comprehension = true;
+                localStorage.setItem('quest_comprehension', 'true');
+                updateProgressBar();
+            }
+        }
+
+        // Section 4 select topic
+        let currentTopic = 'culture';
+        function setTopic(topic) {
+            currentTopic = topic;
+            
+            document.querySelectorAll('.active-topic-btn').forEach(btn => {
+                btn.className = "bg-white hover:bg-indigo-100 p-3.5 rounded-xl border border-slate-200 text-sm font-bold text-indigo-950 transition-all text-left flex items-start gap-2";
+            });
+
+            const targetBtn = document.getElementById('btn-topic-' + topic);
+            targetBtn.className = "bg-white hover:bg-indigo-100 p-3.5 rounded-xl border-2 border-indigo-200 text-sm font-bold text-indigo-950 transition-all text-left flex items-start gap-2 active-topic-btn";
+
+            if (topic === 'screen') {
+                document.getElementById('draft-hook').placeholder = "Hook option: Imagine a playground completely silent, because every kid is glued to a glowing device...";
+                document.getElementById('draft-body').placeholder = "Reasoning details: Real physical activities build coordination, imagination, and real face-to-face friendships...";
+            } else if (topic === 'nature') {
+                document.getElementById('draft-hook').placeholder = "Hook option: Why are we trapped inside concrete boxes when the world has green wild paths waiting for exploration?";
+                document.getElementById('draft-body').placeholder = "Reasoning details: Outdoor education lowers academic stress and keeps our developing minds completely focused...";
+            } else {
+                document.getElementById('draft-hook').placeholder = "Hook option: Think of your family's favorite tradition. What if it disappeared tomorrow?";
+                document.getElementById('draft-body').placeholder = "Reasoning details: Traditional customs anchor our identity, build respect, and unite community neighbors...";
+            }
+        }
+
+        function insertStarter(section, sentence) {
+            const textareaId = 'draft-' + section;
+            const textarea = document.getElementById(textareaId);
+            if (!textarea) return;
+
+            if (textarea.value.trim() === "") {
+                textarea.value = sentence + " ";
+            } else {
+                textarea.value = textarea.value.trim() + " " + sentence + " ";
+            }
+            textarea.focus();
+        }
+
+        function saveDraft() {
+            const hookVal = document.getElementById('draft-hook').value.trim();
+            const bodyVal = document.getElementById('draft-body').value.trim();
+            const refuteVal = document.getElementById('draft-refute').value.trim();
+            const conclusionVal = document.getElementById('draft-conclusion').value.trim();
+
+            if (hookVal === "" || bodyVal === "" || conclusionVal === "") {
+                showVocabNotification("Drafting Incomplete", "Please write something inside the Hook, Evidence, and Conclusion blocks before saving.");
+                return;
+            }
+
+            localStorage.setItem('essay_hook_txt', hookVal);
+            localStorage.setItem('essay_body_txt', bodyVal);
+            localStorage.setItem('essay_refute_txt', refuteVal);
+            localStorage.setItem('essay_conclusion_txt', conclusionVal);
+
+            completedTasks.essay = true;
+            localStorage.setItem('quest_essay', 'true');
+            
+            document.getElementById('check-hook').checked = true;
+            document.getElementById('check-reason').checked = true;
+            document.getElementById('check-ending').checked = true;
+
+            showVocabNotification("Draft Saved", "Your paragraph drafts have been saved to local progress storage.");
+            updateProgressBar();
+        }
+
+        function verifyChecklist() {
+            const h = document.getElementById('check-hook').checked;
+            const r = document.getElementById('check-reason').checked;
+            const e = document.getElementById('check-ending').checked;
+
+            if (h && r && e) {
+                completedTasks.essay = true;
+                localStorage.setItem('quest_essay', 'true');
+                updateProgressBar();
+            }
+        }
+
+        // Reset draft fields
+        function clearDrafts() {
+            document.getElementById('draft-hook').value = "";
+            document.getElementById('draft-body').value = "";
+            document.getElementById('draft-refute').value = "";
+            document.getElementById('draft-conclusion').value = "";
+
+            document.getElementById('check-hook').checked = false;
+            document.getElementById('check-reason').checked = false;
+            document.getElementById('check-ending').checked = false;
+
+            localStorage.removeItem('quest_essay');
+            completedTasks.essay = false;
+            updateProgressBar();
+        }
+
+        function showVocabNotification(title, message) {
+            document.getElementById('vocab-term').innerText = title;
+            document.getElementById('vocab-emoji').innerText = "📝";
+            document.getElementById('vocab-def').innerText = message;
+            document.getElementById('vocab-ex').innerText = "Use writing to communicate clear academic arguments.";
+            document.getElementById('vocab-modal').classList.remove('hidden');
+        }
+
+        function transformText() {
+            const rawProse = document.getElementById('sandbox-prose').value;
+            const output = document.getElementById('sandbox-poetry-output');
+
+            if (rawProse.trim() === "") {
+                output.innerText = "(Structure transformation will render here instantly...)";
+                return;
+            }
+
+            let rhythmText = rawProse
+                .replace(/ because /gi, " \n... Because ")
+                .replace(/ and /gi, " \n [pause] and ")
+                .replace(/ but /gi, " \n [pause] but ")
+                .replace(/,/g, " [pause],\n")
+                .replace(/\./g, ".\n\n");
+
+            output.innerText = rhythmText;
+        }
+
+        function markPoemFinished() {
+            completedTasks.poem = true;
+            localStorage.setItem('quest_poem', 'true');
+            showVocabNotification("Presentation Complete", "You have successfully completed the Spoken Presentation formatting exercise.");
+            updateProgressBar();
+        }
+
+        // Progress state engine
+        function updateProgressBar() {
+            let doneCount = 0;
+            const keys = Object.keys(completedTasks);
+            
+            keys.forEach(key => {
+                const statusIcon = document.getElementById('status-tab-' + key);
+                if (completedTasks[key]) {
+                    doneCount++;
+                    if (statusIcon) {
+                        statusIcon.className = "fa-solid fa-circle-check text-emerald-500 text-lg animate-pop";
+                    }
+                } else {
+                    if (statusIcon) {
+                        statusIcon.className = "fa-regular fa-circle text-slate-300 text-base";
+                    }
+                }
+            });
+
+            const pct = Math.round((doneCount / keys.length) * 100);
+            document.getElementById('master-progress-bar').style.width = pct + '%';
+            document.getElementById('progress-percentage').innerText = pct + '%';
+            document.getElementById('progress-ratio').innerText = `${doneCount}/${keys.length} Focus Tasks Completed`;
+        }
+
+        function resetAllProgress() {
+            localStorage.clear();
+            
+            completedTasks.hook = false;
+            completedTasks.match = false;
+            completedTasks.reading = false;
+            completedTasks.comprehension = false;
+            completedTasks.essay = false;
+            completedTasks.poem = false;
+
+            // Clear answers database
+            for (const key in userAnswersDb) {
+                userAnswersDb[key] = Array(passagesDb[key].questions.length).fill(null);
+            }
+
+            const hookFb = document.getElementById('hook-feedback');
+            if (hookFb) hookFb.className = "hidden";
+
+            const matchFb = document.getElementById('matching-feedback');
+            if (matchFb) matchFb.className = "hidden";
+
+            document.querySelectorAll('#match-examples-list button').forEach(el => {
+                el.disabled = false;
+                el.className = "w-full text-left p-3.5 bg-white border border-slate-200 hover:bg-amber-100/50 rounded-xl text-sm font-semibold transition-all";
+            });
+            document.querySelectorAll('#match-types-list button').forEach(el => {
+                el.disabled = false;
+                el.className = "w-full text-left p-3.5 bg-white border border-slate-200 hover:bg-amber-100/50 rounded-xl text-sm font-semibold transition-all flex justify-between items-center";
+            });
+
+            clearDrafts();
+            updateProgressBar();
+            transformText();
+            loadPassage('dystopian');
+            goToHome();
+            showVocabNotification("Progress Reset", "Your roadmap progress has been successfully cleared.");
+        }
+    </script>
+</body>
+</html>
